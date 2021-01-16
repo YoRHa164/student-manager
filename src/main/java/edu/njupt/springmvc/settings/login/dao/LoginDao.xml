@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.njupt.springmvc.settings.login.dao.LoginDao">
+	<resultMap type="LoginBean" id="loginMap">
+		<id column="id" property="id"/>
+		<result column="loginName" property="account"/>
+		<result column="password" property="password"/>
+		<result column="phone" property="tele"/>
+		<result column="realName" property="realName"/>
+		<result column="authorGroupId" property="authorGroupId"/>
+		<result column="createTime" property="createTime"/>
+	</resultMap>
+	<select id="login" resultMap="loginMap">
+		select 
+			id, 
+			loginName, 
+			password, 
+			phone, 
+			realName, 
+			authorGroupId, 
+			createTime 
+		from 
+			sysadmin
+		where
+			loginName=#{account} and password=#{password}
+	</select>
+</mapper>

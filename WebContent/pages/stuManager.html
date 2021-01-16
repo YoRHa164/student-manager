@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../public/layui/css/layui.css">
+</head>
+<body>
+    <table class="layui-hide" id="test" lay-filter="test"></table>
+
+    <script type="text/html" id="toolbarDemo">
+		<div class="layui-form-item">
+			<!-- 添加学生信息的按钮 -->
+			<div class="layui-inline">
+ 				<button class="layui-btn layui-btn-sm" lay-event="add">添加</button>
+			</div>
+			<!-- 按日期搜索的输入框 -->
+  			<div class="layui-inline">
+    			<label class="layui-form-label" style="width:auto">注册日期</label>
+    			<div class="layui-input-inline" style="width: 120px;">
+      				<input type="date" name="filter-regStartDate"  autocomplete="off" class="layui-input">
+    			</div>
+    			<div class="layui-form-mid">-</div>
+    			<div class="layui-input-inline" style="width: 120px;">
+      				<input type="date" name="filter-regEndDate"  autocomplete="off" class="layui-input">
+   				</div>
+				<div class="layui-input-inline" style="width:auto">
+      				<button type="button" lay-event="filterDate" class="layui-btn layui-btn-sm layui-btn-primary" style="height:38px">
+  						<i class="layui-icon">&#xe615;</i>
+					</button>
+   				</div>
+  			</div>
+			<!-- 按关键字搜索的输入框 -->
+  			<div class="layui-inline">
+    			<div class="layui-input-inline" style="width: 120px;">
+     			 <input type="text" name="filter-keyword" placeholder="关键字"  autocomplete="off" class="layui-input">
+    			</div>
+				<div class="layui-input-inline" style="width:auto">
+     			 	<button type="button" lay-event="filterKey" class="layui-btn layui-btn-sm layui-btn-primary" style="height:38px">
+  						<i class="layui-icon">&#xe615;</i>
+					</button>
+    			</div>
+  			</div>
+		</div>
+	</script>
+    <!-- 表格右侧栏的操作按钮 -->
+    <script type="text/html" id="barDemo">
+        <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    </script>
+    
+    <!-- 修改学生信息模板 -->
+    <script type="text/html" id="editStuInfo">
+		<form class="layui-form"  id="editStuInfoForm" lay-filter="editStuInfoForm">
+  			<input type="text" name="id" required autocomplete="off" class="layui-input" style="display:none;">
+  			<div class="layui-form-item">
+   				<label class="layui-form-label">姓名</label>
+    			<div class="layui-input-block">
+      				<input type="text" name="realName" required  lay-verify="changeRealName"  autocomplete="off" class="layui-input">
+    			</div>
+  			</div>
+  			<div class="layui-form-item">
+    			<label class="layui-form-label">性别</label>
+    			<div class="layui-input-block">
+      				<input type="radio" name="gender" value="男" title="男">
+      				<input type="radio" name="gender" value="女" title="女">
+    			</div>
+  			</div>
+  			<div class="layui-form-item">
+    			<label class="layui-form-label">年龄</label>
+    			<div class="layui-input-block">
+      				<input type="number" name="age" required  lay-verify="required"  autocomplete="off" class="layui-input">
+    			</div>
+  			</div>
+  			<div class="layui-form-item">
+    			<label class="layui-form-label">身份证号</label>
+    			<div class="layui-input-block">
+      				<input type="text" name="indentifyNo" required  lay-verify="required"  autocomplete="off" class="layui-input">
+   				</div>
+  			</div>
+  			<div class="layui-form-item">
+    			<label class="layui-form-label">所在城市</label>
+    			<div class="layui-input-block">
+      				<select name="city" lay-verify="required">
+        				<option value="北京">北京</option>
+        				<option value="上海">上海</option>
+        				<option value="广州">广州</option>
+						<option value="广东">广东</option>
+            			<option value="江西">江西</option>
+        				<option value="厦门">厦门</option>
+        				<option value="福建">福建</option>
+        				<option value="深圳">深圳</option>
+        				<option value="杭州">杭州</option>
+      				</select>
+    			</div>
+  			</div>
+  			<div class="layui-form-item">
+    			<label class="layui-form-label">详细地址</label>
+    			<div class="layui-input-block">
+      				<input type="text" name="address" required  lay-verify="required"  autocomplete="off" class="layui-input">
+    			</div>
+  			</div>
+  			<div class="layui-form-item">
+    			<label class="layui-form-label">手机号</label>
+    			<div class="layui-input-block">
+      				<input type="phone" name="phone" required  lay-verify="required"  autocomplete="off" class="layui-input">
+    			</div>
+  			</div>
+ 			<div class="layui-form-item" style="display:none">
+    			<div class="layui-input-block">
+      				<button class="layui-btn" lay-submit lay-filter="editStuInfoForm-submit" id="editStuInfoForm-submit">立即提交</button>
+    			</div>
+  			</div>
+		</form>
+    </script>
+    
+    <!-- 添加学生信息模板 -->
+    <script type="text/html" id="addStuInfo">
+		<form class="layui-form"  id="addStuInfoForm" lay-filter="addStuInfoForm">
+  			<input type="text" name="id" required autocomplete="off" class="layui-input" style="display:none;">
+			  <div class="layui-form-item">
+			    <label class="layui-form-label">姓名</label>
+			    <div class="layui-input-block">
+			      <input type="text" name="realName" required  lay-verify="realName"  autocomplete="off" class="layui-input">
+			    </div>
+			  </div>
+			  <div class="layui-form-item">
+			    <label class="layui-form-label">性别</label>
+			    <div class="layui-input-block">
+			      <input type="radio" name="gender" value="男" title="男">
+			      <input type="radio" name="gender" value="女" title="女">
+			    </div>
+			  </div>
+			  <div class="layui-form-item">
+			    <label class="layui-form-label">年龄</label>
+			    <div class="layui-input-block">
+			      <input type="number" name="age" required  lay-verify="number"  autocomplete="off" class="layui-input">
+			    </div>
+			  </div>
+			  <div class="layui-form-item">
+			    <label class="layui-form-label">身份证号</label>
+			    <div class="layui-input-block">
+			      <input type="text" name="indentifyNo" required  lay-verify="required"  autocomplete="off" class="layui-input">
+			    </div>
+			  </div>
+			  <div class="layui-form-item">
+			    <label class="layui-form-label">所在城市</label>
+			    <div class="layui-input-block">
+			      <select name="city" lay-verify="required">
+			        <option value="北京">北京</option>
+			        <option value="上海">上海</option>
+			        <option value="广州">广州</option>
+			        <option value="广东">广东</option>
+			        <option value="江西">江西</option>
+			        <option value="厦门">厦门</option>
+			        <option value="福建">福建</option>
+			        <option value="深圳">深圳</option>
+			        <option value="杭州">杭州</option>
+			      </select>
+			    </div>
+			  </div>
+			  <div class="layui-form-item">
+			    <label class="layui-form-label">详细地址</label>
+			    <div class="layui-input-block">
+			      <input type="text" name="address" required  lay-verify="required"  autocomplete="off" class="layui-input">
+			    </div>
+			  </div>
+			  <div class="layui-form-item">
+			    <label class="layui-form-label">手机号</label>
+			    <div class="layui-input-block">
+			      <input type="phone" name="phone" required  lay-verify="phone"  autocomplete="off" class="layui-input">
+			    </div>
+			  </div>
+			 <div class="layui-form-item" style="display:none">
+			    <div class="layui-input-block">
+			      <button class="layui-btn" lay-submit lay-filter="addStuInfoForm-submit" id="addStuInfoForm-submit">立即提交</button>
+			    </div>
+			  </div>
+		</form>
+    </script>
+    
+</body>
+<script src="../public/layui/layui.js"></script>
+<script>
+    layui.use(['table','upload','element','form'], function(){
+      var table = layui.table;
+      var upload = layui.upload;
+      var element = layui.element;
+      var form = layui.form;
+      var $ = layui.jquery;
+      var stuInfoTable = table.render({
+        elem: '#test'
+        ,url:'../api/StuInfo/query'
+        ,toolbar: '#toolbarDemo' //开启头部工具栏
+        ,defaultToolbar: [
+        {
+        	title: '导出'
+   	        ,layEvent: 'STUINFOTABLE_EXPORT'
+   	        ,icon: 'layui-icon-upload-circle'
+        }
+        ,{ //自定义头部工具栏右侧图标
+	         title: '导入'
+	         ,layEvent: 'STUINFOTABLE_IMPORT'
+	         ,icon: 'layui-icon-download-circle'
+        }]
+        ,title: '学生信息数据表'
+        ,cols: [[ //表头
+        	 {field: 'id', title: 'ID', width:80, sort: true, fixed: 'left'}
+        	 ,{field: 'realName', title: '性名', width:80}
+        	 ,{field: 'gender', title: '性别', width:80, sort: true,edit:"text"}
+        	 ,{field: 'age', title: '年龄', width:80,edit:"text"} 
+        	 ,{field: 'indentifyNo', title: '身份证号码', width: 177,edit:"text"}
+        	 ,{field: 'city', title: '城市', width: 80, sort: true}
+        	 ,{field: 'address', title: '地址', width: 80, sort: true}
+        	 ,{field: 'phone', title: '手机号码', width: 80,edit:"text"}
+        	 ,{field: 'regTime', title: '注册时间', width: 135, sort: true,edit:"text"}
+        	 ,{fixed: 'right', title: '操作',width:150, align:'center', toolbar: '#barDemo'} //右侧固定toolbar
+        ]]
+        ,page: true
+        ,limit: 10
+      });
+      
+      //头工具栏事件
+      table.on('toolbar(test)', function(obj){
+        var checkStatus = table.checkStatus(obj.config.id);
+        switch(obj.event){
+          //查找范围内注册日期的学生信息
+          case 'filterDate':
+        	 filterByDate($,stuInfoTable,layer);
+          	 break;
+          //查找姓名，手机号，所在城市中包含关键字的学生
+          case 'filterKey':
+        	 filterByKeyWord($,stuInfoTable,layer);
+	         break;
+          //数据导出
+          case 'STUINFOTABLE_EXPORT':
+             window.open("../api/StuInfo/export");
+          	 break;
+          //添加学生信息数据
+          case 'add':
+        	 addStuInfo($,form,layer);
+         	 break;  
+        };
+      });
+      
+      //监听行工具事件
+      table.on('tool(test)', function(obj){
+        var data = obj.data;
+        console.log(data)
+        if(obj.event === 'del'){
+			deleteStuInfo($,layer,data,obj);
+        } else if(obj.event === 'edit'){
+          //修改学生信息
+          updateStuInfo($,layer,form,data);
+        }
+      });
+      //监听修改学生信息表单提交事件
+      form.on('submit(editStuInfoForm-submit)', function(data){
+    	  //向后台发起修改学生信息请求
+    	  postUpdateStuInfo($,data);
+    	  //阻止表单跳转
+    	  return false; 
+      });
+      //监听添加学生信息表单提交事件
+      form.on('submit(addStuInfoForm-submit)', function(data){
+    	  //向后台发起添加学生信息请求
+    	  postAddStuInfo($,data.field);
+    	  //阻止表单跳转
+    	  return false; 
+      });
+      //加载文件上传组件，用于xls导入
+      upload.render({
+         elem: "[lay-event='STUINFOTABLE_IMPORT']"
+         ,url: '../api/StuInfo/upload'
+         ,accept: 'file'
+         ,exts: 'xls'
+         ,done: function(res, index, upload){
+        	 layer.alert(res.msg);
+         }
+      	 ,error: function(index, upload){
+
+    	 }
+      });
+    });
+  	//查找范围内注册日期的学生信息处理函数
+    function filterByDate($,stuInfoTable,layer){
+  		//获取开始日期和结束日期
+    	var startDate = $("[name='filter-regStartDate']").val();
+    	var endDate = $("[name='filter-regEndDate']").val();
+    	//条件不完整，或者条件不符合
+    	if(startDate == '' || endDate ==''){
+    		layer.alert("开始时间和结束时间是必填项！");
+    		return;
+    	}else if(startDate > endDate){
+    		layer.alert("开始时间不能大于结束时间！");
+    		return;
+    	}
+        //发起请求，重载表格
+        stuInfoTable.reload({
+        	url: '../api/StuInfo/queryByRegTime'
+        	,where: { //额外参数，查询条件
+        	    startDate: startDate
+        	    ,endDate: endDate
+        	}
+        	,page: {
+        	    curr: 1 //从第 1 页开始
+        	}
+        })
+    }
+  	//查找姓名，手机号，所在城市中包含关键字的学生处理函数
+  	function filterByKeyWord($,stuInfoTable,layer){
+  		 //获取关键字
+  		 var keyWord = $("[name='filter-keyword']").val();
+  		 //校验关键字
+	   	 if(keyWord == ''){
+	   		layer.alert("必须输入关键字！");
+	    		return;
+	   	 }
+  		 //向后台请求过滤数据，重新渲染表格
+	   	 stuInfoTable.reload({
+	        	url: '../api/StuInfo/queryByKeyWord'
+	        	,where: { //额外参数
+	        		keyWord: keyWord
+	        	}
+	        	,page: {
+	        	    curr: 1 //从第1 页开始
+	        	}
+	     })
+  	}
+  	//添加学生信息数据事件处理函数
+  	function addStuInfo($,form,layer){
+  		layer.open({
+    		title: '添加学生'
+          	,content: $("#addStuInfo").html()
+          	,area: ['500px', '400px']
+            ,yes: function(index, layero){
+            	//触发添加学生信息表单提交事件
+            	$("#addStuInfoForm-submit")[0].click();
+            	//关闭对话框
+          	    layer.close(index);
+          	 }
+    	});
+  		//给表单赋值
+    	form.val("addStuInfoForm");
+    	//表单验证
+        form.verify({
+        	  realName: function(value,item){
+  				//标记名字是否已经存在
+  			  var isNameExists = false;
+  			  $.ajax({
+  				  url:'../api/StuInfo/queryByRealName',
+  				  async: false,
+  				  type: "get",
+  				  data: {realName:value},
+  				  success: function(data){
+  					  //var data = JSON.parse(data);
+      				  if(data.code == 0){
+      					  isNameExists = true;
+      				  }
+  				  }
+  			  }); 
+  			  if(isNameExists) return "该学生名字已经存在";
+  		  	  }
+        });
+  	}
+  	//删除学生信息数据
+  	function deleteStuInfo($,layer,data,obj){
+  		//打开弹框
+  		layer.confirm('真的要删除该行么', function(index){
+      	  $.post("../api/StuInfo/deleteById",{id:data.id},function(data){
+      		  if(data.code == 0){
+      			  //提示删除成功
+      			  layer.alert(data.msg,function(index){
+      				obj.del();
+      				layer.close(index);
+      			  });
+      		  }else{
+      			  //提示失败信息
+      			  layer.alert(data.msg);
+      		  }
+      	  })
+      	  //关闭弹框
+          layer.close(index);
+        });
+  	}
+  	//修改学生信息事件处理函数
+  	function updateStuInfo($,layer,form,data){
+  		layer.open({
+      	  title: '修改学生信息'
+      	  ,content: $("#editStuInfo").html()
+      	  ,area: ['500px', '400px']
+          ,yes: function(index, layero){
+        		//触发修改学生信息表单提交事件
+        		$("#editStuInfoForm-submit")[0].click();
+        		//关闭对话框
+      	    	layer.close(index);
+      	  }
+        });  
+  		//给表单赋值
+        form.val("editStuInfoForm",data);
+        //表单验证
+        form.verify({
+      	  //验证学生姓名是否已经存在
+      	  changeRealName: function(value,item){
+      		  if(value != data.realName){
+      			  //标记名字是否已经存在
+      			  var isNameExists = false;
+      			  $.ajax({
+      				  url:'../api/StuInfo/queryByRealName',
+      				  async: false,
+      				  type: "get",
+      				  data: {realName:value},
+      				  success: function(data){
+      					  //var data = JSON.parse(data);
+      					  //名字存在
+          				  if(data.code == 0){
+          					  isNameExists = true;
+          				  }
+      				  }
+      			  }); 
+      			  //返回名字存在的信息
+      			  if(isNameExists) return "该学生名字已经存在";
+      		  }
+      	  }
+        });
+  	}
+  	//向后台发起修改学生信息的请求
+  	function postUpdateStuInfo($,data){
+  		$.post("../api/StuInfo/update",data.field,function(data){
+  		  //修改成功,提示用户，刷新页面
+  		  if(data.code == 0){
+  			  layer.alert(data.msg,function(){
+  				window.location.reload();
+  			  });  
+  		  }else{
+  			  //修改失败提示用户
+  			  layer.alert(data.msg);
+  		  }	  
+  	  })
+  	}
+  	//向后台发起添加学生信息的请求
+  	function postAddStuInfo($,data){
+  		$.post("../api/StuInfo/add",data,function(data){
+  		  //添加成功,提示用户，刷新页面
+  		  if(data.code == 0){
+  			  layer.alert(data.msg,function(){
+  				  window.location.reload();
+  			  });
+  		  }else{
+  			  //添加失败，刷新页面
+  			  layer.alert(data.msg);
+  		  }	  
+  	  	})
+  	}
+</script>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<link href="../public/layui/css/layui.css" rel="stylesheet"></link>
+<link href="../public/css/login.css" rel="stylesheet"></link>
+<script src="../public/layui/layui.js"></script>
+<body>
+    <div class="box">
+        <form class="layui-form" lay-filter="loginForm">
+            <div class="box-title">StuAdmin</div>
+            <div class="box-subtitle">欢迎使用学生管理系统</div>
+            <div class="box-form">
+                <div class="layui-form-item">
+                    <label for="username" class="box-form-lable layui-icon layui-icon-username"></label>
+                    <input type="text" name="loginName" required lay-verify="username" placeholder="用户名" 
+                    autocomplete="off" class="layui-input box-form-input-item" > 
+                </div>
+                
+                <div class="layui-form-item">
+                    <label for="password" class="box-form-lable layui-icon layui-icon-password"></label>
+                    <input type="password" name="password" required lay-verify="password" placeholder="密码" 
+                        autocomplete="off" class="layui-input box-form-input-item" >
+                </div>
+                <div class="layui-form-item">
+                	<div class="layui-inline">
+					    <label for="volidateCode" style="padding-left:0;width:auto" 
+					    class="layui-form-label">验证码</label>
+					    <div class="layui-input-inline" style="width: 150px;">
+					      <input name="volidateCode" type="text" class="layui-input box-form-input-item" 
+					      lay-verify="volidateCode" style="padding-left:3px" >
+					    </div>
+					    <div class="layui-input-inline" style="width: 130px;">
+					       <canvas name="volidateCode" width="130" height="38" id="volidateCode"></canvas>
+					    </div>
+					    <div class="layui-input-inline" 
+					    	style="width: 50px; height:38px;font-size:12px;color:gray;">
+					      	点击更换验证码
+					    </div>
+					</div>
+                </div>
+				<div class="layui-form-item">
+                    <input type="checkbox" name="savePwd" title="保存密码" lay-skin="primary" checked >
+                </div>
+                <div class="layui-form-item">
+                    <button lay-submit lay-filter="formDemo" type="button" class="layui-btn layui-btn-fluid box-form-btn-submit">登录</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</body>
+<script src="../public/js/cookieUtils.js"></script>
+<script src="../public/js/code.js"></script>
+<script>
+	
+	//if($("input[name='savePwd']").val() == "on")
+    layui.use('form', function(){
+        var form = layui.form;
+        var $ = layui.jquery;
+      	//是否保存了密码，并且cookie中存在用户名密码信息
+    	if($("input[name='savePwd']").attr("checked")){
+    		var userInfo = cookieUtils.findCookie("userInfo");
+    		if(userInfo){
+    			var userInfoArr = userInfo.split("/");
+    			var data ={}; data.loginName=userInfoArr[0]; data.password=userInfoArr[1];
+    			form.val("loginForm",data);
+    		}
+    	}
+      	//初始化验证码
+      	var code = codeHelper.drawPic("volidateCode");
+      	//绑定验证码刷新事件
+      	$("canvas").click(function(){
+      		code = codeHelper.drawPic("volidateCode");
+      	})
+        //验证表单
+        form.verify({
+            username: function(value, item){ 
+            	if(!value){
+                    return '用户名不能为空';
+                }
+                if(!new RegExp("^[a-zA-Z0-9_\u4e00-\u9fa5\\s·]+$").test(value)){
+                return '用户名不能有特殊字符';
+                }
+                if(/(^\_)|(\__)|(\_+$)/.test(value)){
+                return '用户名首尾不能出现下划线\'_\'';
+                }
+                if(/^\d+\d+\d$/.test(value)){
+                return '用户名不能全为数字';
+                }
+                //如果不想自动弹出默认提示框，可以直接返回 true，这时你可以通过其他任意方式提示（v2.5.7 新增）
+                if(value === 'xxx'){
+                alert('用户名不能为敏感词');
+                return true;
+                }
+            }
+            ,password: [
+                /^[\S]{6,12}$/
+                ,'密码必须6到12位，且不能出现空格'
+            ]
+            ,volidateCode: function(value,item){
+            	if(value.toUpperCase() != code.toUpperCase() )
+            		return "验证码不正确"
+            }
+        });
+        //监听提交
+        form.on('submit(formDemo)', function(data){
+            var data = data.field;
+            $.post("../api/Admin/login",data,function(data){
+            	if(data.code == 0){
+            		layer.alert("登录成功！",function(){
+            			window.location  = "index.html";
+            		});
+            	}else{
+            		layer.alert(data.msg);
+            	}
+            })
+            console.log(data.field);
+            return false;
+        }); 
+    });
+</script>
+</html>

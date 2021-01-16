@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../public/layui/css/layui.css">
+    <link rel="stylesheet" href="../public/css/mycss.css"  media="all">
+</head>
+<body>
+    <table class="layui-hide" id="adminTable" lay-filter="adminTable"></table>
+
+	<!-- 表格顶部工具栏 -->
+    <script type="text/html" id="toolbarDemo">
+		<div class="layui-form-item">
+			<!-- 添加权限组的按钮 -->
+			<div class="layui-inline">
+ 				<button class="layui-btn layui-btn-sm" lay-event="add">添加管理员</button>
+			</div>
+		</div>
+	</script>
+    <!-- 表格右侧栏的操作按钮模板 -->
+    <script type="text/html" id="barDemo">
+        <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    </script>
+    
+    <!-- 修改管理员信息表单模板 -->
+    <script type="text/html" id="updateAdminFromTempl">
+		<form class="layui-form"  id="updateAdminFrom" lay-filter="updateAdminFrom">
+  			<input type="text" name="id" required autocomplete="off" class="layui-input" style="display:none;">
+  			<div class="layui-form-item">
+   				<label class="layui-form-label">用户名</label>
+    			<div class="layui-input-block">
+      				<input type="text" name="loginName" required lay-verify="loginName"  autocomplete="off" class="layui-input">
+    			</div>
+  			</div>
+  			<div class="layui-form-item">
+   				<label class="layui-form-label">密码</label>
+    			<div class="layui-input-block">
+      				<input type="password" name="password"  lay-verify="password"  autocomplete="off" class="layui-input">
+    			</div>
+  			</div>
+			<div class="layui-form-item">
+   				<label class="layui-form-label">确认密码</label>
+    			<div class="layui-input-block">
+      				<input type="password" name="surePassword"  lay-verify="surePassword"  autocomplete="off" class="layui-input">
+    			</div>
+  			</div>
+			<div class="layui-form-item">
+   				<label class="layui-form-label">姓名</label>
+    			<div class="layui-input-block">
+      				<input type="text" name="realName" required lay-verify="realName"  autocomplete="off" class="layui-input">
+    			</div>
+  			</div>
+			<div class="layui-form-item">
+   				<label class="layui-form-label">电话</label>
+    			<div class="layui-input-block">
+      				<input type="phone" name="phone" required lay-verify="phone" autocomplete="off" class="layui-input">
+    			</div>
+  			</div>
+			<div class="layui-form-item">
+   				<label class="layui-form-label">权限组</label>
+    			<div class="layui-input-block">
+					<select name="authorGroupId" lay-search>
+  						<option value="">无</option>
+						{{#  if(d.data.length == 0){ 
+
+  						     } else { 
+    							layui.each(d.data, function(index, item){   }}
+									<option value="{{ item.id }}">{{ item.displayName }}</option>
+							{{# })  }}
+  						{{#  } }}
+					</select> 
+    			</div>
+  			</div>
+			<div class="layui-form-item" style="display:none">
+			    <div class="layui-input-block">
+			      <button class="layui-btn" lay-submit lay-filter="updateAdminForm-submit" id="updateAdminForm-submit">立即提交</button>
+			    </div>
+			</div>
+		</form>
+    </script>
+    
+    <!-- 添加管理员表单模板 -->
+    <script type="text/html" id="addAdminFormTempl">
+		<form class="layui-form"  id="addAdminForm" lay-filter="addAdminForm">
+  			<div class="layui-form-item">
+   				<label class="layui-form-label">用户名</label>
+    			<div class="layui-input-block">
+      				<input type="text" lay-verify="loginName" name="loginName"  autocomplete="off" class="layui-input">
+    			</div>
+  			</div>
+  			<div class="layui-form-item">
+   				<label class="layui-form-label">密码</label>
+    			<div class="layui-input-block">
+      				<input type="password" name="password"  lay-verify="password"  autocomplete="off" class="layui-input">
+    			</div>
+  			</div>
+			<div class="layui-form-item">
+   				<label class="layui-form-label">确认密码</label>
+    			<div class="layui-input-block">
+      				<input type="password" name="surePassword"  lay-verify="surePassword"  autocomplete="off" class="layui-input">
+    			</div>
+  			</div>
+			<div class="layui-form-item">
+   				<label class="layui-form-label">姓名</label>
+    			<div class="layui-input-block">
+      				<input type="text" name="realName" required lay-verify="realName"  autocomplete="off" class="layui-input">
+    			</div>
+  			</div>
+			<div class="layui-form-item">
+   				<label class="layui-form-label">电话</label>
+    			<div class="layui-input-block">
+      				<input type="phone" name="phone" required lay-verify="phone" autocomplete="off" class="layui-input">
+    			</div>
+  			</div>
+			<div class="layui-form-item">
+   				<label class="layui-form-label">权限组</label>
+    			<div class="layui-input-block">
+					<select name="authorGroupId" lay-search>
+  						<option value="">无</option>
+						{{#  if(d.data.length == 0){ 
+
+  						     } else { 
+    							layui.each(d.data, function(index, item){   }}
+									<option value="{{ item.id }}">{{ item.displayName }}</option>
+							{{# })  }}
+  						{{#  } }}
+					</select> 
+    			</div>
+  			</div>
+			<div class="layui-form-item" style="display:none">
+			    <div class="layui-input-block">
+			      <button class="layui-btn" lay-submit lay-filter="addAdminForm-submit" id="addAdminForm-submit">立即提交</button>
+			    </div>
+			</div>
+		</form>
+    </script>
+    <script type="text/html" id="authorListTpl">
+  		{{#  if(d.authorList.length == 0){ }}
+    				无
+  			{{#  } else { 
+    				layui.each(d.authorList, function(index, item){   }}
+						<span>{{ item.displayName }}</span>
+				{{# })  }}
+  		{{#  } }}
+	</script>
+</body>
+<script src="../public/layui/layui.js"></script>
+<script>
+    layui.use(['table','upload','element','form','laytpl'], function(){
+      var table = layui.table;
+      var upload = layui.upload;
+      var element = layui.element;
+      var form = layui.form;
+      var $ = layui.jquery;
+      var laytpl = layui.laytpl;
+      //向后台请求学生成绩数据，渲染表格
+      var authorGroupTable = table.render({
+        elem: '#adminTable'
+        ,url:'../api/Admin/page'
+        ,toolbar: '#toolbarDemo' 	//设置头部左侧工具栏
+        ,defaultToolbar: []			//设置头部右侧工具栏
+        ,title: '权限组数据表'		//设置表格标题
+        ,cols: [[ 				//设置表头数据项
+        	 {field: 'id', title: '序号', width:80, sort: true, type:"numbers"}
+        	 ,{field: 'loginName', title: '用户名', width:120}
+        	 ,{field: 'realName', title: '姓名', width:80}
+        	 ,{field: 'phone', title: '电话', width:150} 
+        	 ,{field: 'authorGroup', title: '权限组',width:100,templet:function(d){
+        		 //数据为空
+        		 if(!d.authorGroup)
+        			 return '<div>无</div>'
+        		 return '<div>'+d.authorGroup.displayName+'</div>'
+        	 }} 
+        	 ,{field: 'createTime', title: '创建时间', width:170} 
+        	 ,{fixed: 'right', title: '操作',width:150, align:'center', toolbar: '#barDemo'} //右侧固定toolbar
+        ]]
+        ,page: true				//开启分页
+        ,limit: 10				//设置一页大小
+      });
+      //为头部工具栏绑定事件
+      table.on('toolbar(adminTable)', function(obj){
+        var checkStatus = table.checkStatus(obj.config.id);
+        switch(obj.event){
+          //添加权限组
+          case 'add':
+	          addAdmin($,form,layer,laytpl);
+	          break;  
+        };
+      });
+      
+      //为表格右侧工具栏绑定事件
+      table.on('tool(adminTable)', function(obj){
+        var data = obj.data;
+        console.log(data)
+          //删除管理员账号
+        if(obj.event === 'del'){
+		  	deleteAdmin($,layer,data,obj);
+		  //编辑管理员账号
+        } else if(obj.event === 'edit'){
+          	updateAdmin($,layer,form,data,laytpl);
+        } 
+      });
+      
+      //绑定修改管理员信息表单提交事件处理函数
+      form.on('submit(updateAdminForm-submit)', function(data){
+    	  console.log(data.field);
+    	  //向后台发起修改学生信息请求
+    	  postUpdateAdmin($,data);
+    	  //阻止表单跳转
+    	  return false; 
+      });
+      
+      //绑定添加管理员的处理函数
+      form.on('submit(addAdminForm-submit)', function(data){
+    	  console.log(data.field);
+    	  //向后台发起添加学生信息请求
+    	  postAddAdmin($,data);
+    	  //阻止表单跳转
+    	  return false; 
+      });
+      
+      //绑定为权限组删除权限的处理函数
+      form.on('submit(delAuthorForm-submit)', function(data){
+    	  //layui获取的checkbox不全，使用jq手动获取
+    	  data.field.authorIds = getAuthorCheckedbox($);
+    	  console.log(data.field);
+    	  //向后台发起请求
+    	  postDelAuthor($,data);
+    	  //阻止表单跳转
+    	  return false; 
+      });
+      //添加表单验证
+      form.verify({
+    	  loginName: function(value, item){ //用户名验证
+    		if(value == ""){
+    		  return '用户名不能为空';
+    		}
+    	    if(!new RegExp("^[a-zA-Z0-9_\u4e00-\u9fa5\\s·]+$").test(value)){
+    	      return '用户名不能有特殊字符';
+    	    }
+    	    if(/(^\_)|(\__)|(\_+$)/.test(value)){
+    	      return '用户名首尾不能出现下划线\'_\'';
+    	    }
+    	    if(/^\d+\d+\d$/.test(value)){
+    	      return '用户名不能全为数字';
+    	    }
+    	    if(value != "" && ! /^[\S]{6,12}$/.test(value)){
+      		  return '用户名必须5到12位，且不能出现空格';
+      		}
+    	  }
+      	  ,password: function(value, item){  //密码验证，输入则为修改密码，不输入默认不修改
+      		  if(value != "" && ! /^[\S]{6,12}$/.test(value)){
+      			return '密码必须6到12位，且不能出现空格';
+      		  }
+      	  }
+    	  ,surePassword: function(value, item){  //确认密码验证
+    		  if(value != $("input[name='password']").val()){
+    			  return '两次输入的密码不一致';
+    		  }
+    	  }
+    	  ,realName: [   // 姓名验证
+      	    /^[\S]{2,12}$/
+      	    ,'姓名必须2到12位，且不能出现空格'
+      	  ]
+    	});  
+    });
+
+  	//添加管理员处理函数
+  	function addAdmin($,form,layer,laytpl){
+  		//向后台请求所有的权限
+  		$.get("../api/AuthorGroup/all",function(data){
+  			//获取添加权限组模板
+			var template = addAdminFormTempl.innerHTML;
+  			//渲染模板
+			laytpl(template).render(data,function(html){
+				//弹出
+				layer.open({
+					title:"添加权限组"
+					,area: ['500px', '400px']
+					,content: html
+					,success: function(){
+						form.val("addAdminForm");   //触发表单select生效
+					}
+	  			    ,yes: function(index, layero){
+	  			        //触发表单提交事件
+	  			        $("#addAdminForm-submit")[0].click();
+	  			        //关闭对话框
+	  			      	//layer.close(index);
+	  			    }
+				})
+			})
+  		})
+  	}
+  	//删除管理员账号处理函数
+  	function deleteAdmin($,layer,data,obj){
+  		layer.confirm('真的要删除该管理员账号么', function(index){
+      	  $.post("../api/Admin/delete",{id:data.id},function(data){
+      		  if(data.code == 0){
+      			  //删除成功
+      			  layer.alert(data.msg);
+      			  obj.del();
+      		  }else{
+      			  //删除失败
+      			  layer.alert(data.msg);
+      		  }
+      	  })
+          layer.close(index);
+        });
+  	}
+  	//修改管理员账号信息
+  	function updateAdmin($,layer,form,data,laytpl){
+  		console.log(data);
+  		//向后台请求所有权限组
+  		$.get("../api/AuthorGroup/all",function(res){
+  			//获取模板
+  			var template = updateAdminFromTempl.innerHTML;
+  			//用数据渲染模板
+  			laytpl(template).render(res,function(html){
+  				layer.open({
+  		      	  title: '修改管理员信息'
+  		      	  ,content: html
+  		      	  ,area: ['500px', '400px']
+  				  ,success: function(){
+  					    //给表单赋值
+  			            form.val("updateAdminFrom",data);
+  				  }
+  		          ,yes: function(index, layero){
+  		        		//触发表单提交事件
+  		        		$("#updateAdminForm-submit")[0].click();
+  		        		//关闭对话框
+  		      	    	//layer.close(index);
+  		      	  }
+  		        });  
+  			})
+  		})
+  	}
+ 
+  	//向后台发起修改管理员账号信息的请求
+  	function postUpdateAdmin($,data){
+  		$.post("../api/Admin/update",data.field,function(data){
+  		  //修改成功
+  		  if(data.code == 0){
+  			  layer.alert(data.msg,function(){
+  				window.location.reload();
+  			  });  
+  		  }else{
+  			  //修改失败
+  			  layer.alert(data.msg);
+  		  }	  
+  	  })
+  	}
+  	
+  	//向后台发起添加管理员的请求
+  	function postAddAdmin($,data){
+  		$.post("../api/Admin/add",data.field,function(data){
+  		  //添加成功
+  		  if(data.code == 0){
+  			  layer.alert(data.msg,function(){
+  				  window.location.reload();
+  			  });
+  		  }else{
+  			  //添加失败
+  			  layer.alert(data.msg);
+  		  }	  
+  	  	})
+  	}
+
+</script>
+</html>

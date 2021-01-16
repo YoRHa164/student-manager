@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../public/layui/css/layui.css">
+</head>
+<body style="padding:20px 20px 0 20px">
+  
+    <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+    <div id="chart1" style="width: 600px;height:400px;"></div>
+    
+    <h2><b>查看时间范围内注册数量</b></h2>
+    <form class="layui-form" style="margin-top:20px" lay-filter="RegNumEveryDayForm">
+    	<div class="layui-form-item">
+		  <div class="layui-inline">
+		    <label class="layui-form-label" style="text-align:center">范围</label>
+		    <div class="layui-input-inline" style="width: 150px;">
+		      <input type="date" name="startDate" autocomplete="off" required lay-verify="startDate" class="layui-input">
+		    </div>
+		    <div class="layui-form-mid">-</div>
+		    <div class="layui-input-inline" style="width: 150px;">
+		      <input type="date" name="endDate" autocomplete="off" required lay-verify="endDate" class="layui-input">
+		    </div>
+		    <div class="layui-input-inline">
+		    	<button lay-submit lay-filter="submitRegNumEveryDayForm" 
+		    			style="width:40px;height:38px;">
+		    		<i class="layui-icon layui-icon-search"></i>
+		    	</button>
+		    </div>
+		  </div>
+		</div>
+    </form>
+    <div id="chart2" style="width: 600px;height:400px;"></div>
+</body>
+<script src="../public/layui/layui.js"></script>
+<script src="../public/js/echarts.min.js"></script>
+<script type="text/javascript">
+    
+    var myChart1 = echarts.init(document.getElementById('chart1'));
+    var myChart2 = echarts.init(document.getElementById('chart2'));
+    
+    layui.use(['jquery','form'],function(){
+    	var $ = layui.jquery;
+    	var form = layui.form;
+    	//获取最近十天数据，并渲染图表
+    	renderRecendData($);
+    	//表单验证
+    	form.verify({
+    		startDate: function(val,index){
+    			if(!val)
+    				return "开始时间不能为空";
+    		},
+    		endDate: function(val,index){
+    			console.log(val)
+    			if(!val)
+    				return "结束时间不能为空";
+    			if(new Date(val) > new Date())
+    				return "结束时间不能大于今天";
+    			if(val < $("input[name='startDate']").val()){
+    				return "结束时间不能早于开始时间";
+    			}
+    		}
+    	})
+    	//监听按时间段搜索提交事件
+    	form.on("submit(submitRegNumEveryDayForm)",function(data){
+    		var param = data.field;
+    		var endDate = new Date(param.endDate);
+    		endDate.setDate(endDate.getDate() + 1);
+    		endDate = dateFormat(endDate);
+    		param.endDate = endDate;
+    		renderTimeZoneData($,param,myChart2);
+    		return false;
+    	})
+    	
+    })
+    //获取最近十天数据，并渲染图表
+    function renderRecendData($){
+    	var endDate = new Date();
+    	//设置结束日期晚一天
+    	endDate.setDate(endDate.getDate() + 1);
+    	var startDate = new Date();
+    	startDate.setDate(endDate.getDate()-10);
+    	var param = {startDate:dateFormat(startDate),endDate:dateFormat(endDate)}
+    	//获取最近十天数据，并渲染图表
+    	renderTimeZoneData($,param,myChart1,"最近十天数据");
+    }
+    //获取时间段的数据，并渲染图表
+	function renderTimeZoneData($,param,chart,charTitle){
+		$.get('../api/StuCount/regEveryDayByTimeZone',param,function(data){
+    		console.log(data);
+    		//从返回的数据中提取x和y轴数据
+    		var dateList = [];
+    		var regNumList = [];
+    		if(data.code == 0){
+    			fetchXYData(data,dateList,regNumList);
+        		//渲染图表x和y轴数据
+        		chartRander(chart,dateList,regNumList,charTitle);
+    		}else{
+    			layer.alert(data.msg);
+    		}
+    		
+    	})
+    }
+    //把时间转换成yyyy-MM-dd格式
+    function dateFormat(date){
+    	return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" +date.getDate(); 
+    }
+    //从返回的数据中提取x和y轴数据
+    function fetchXYData(data,dateList,regNumList){
+    	data.data.forEach(function(item,index){
+			dateList.push(item.regDate.substr(5));
+			regNumList.push(item.regNum);
+		})
+    }
+    //渲染图表x和y轴数据
+    function chartRander(chart,XData,YData,titleText){
+    	chart.setOption({
+			title:{
+				text: titleText
+			},
+		    xAxis: {
+		        type: 'category',
+		        data: XData
+		    },
+		    yAxis: {
+		        type: 'value'
+		    },
+		    tooltip: {},
+		    legend: {},
+		    series: [{
+		        data: YData,
+		        type: 'line',
+		        name: '注册数量'
+		    }]
+        });
+    }
+</script>
+</html>

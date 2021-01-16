@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../public/layui/css/layui.css">
+    <link rel="stylesheet" href="../public/css/mycss.css"  media="all">
+</head>
+<body>
+
+    <table class="layui-hide" id="authorGroupTable" lay-filter="authorGroupTable"></table>
+
+	<!-- 表格顶部工具栏 -->
+    <script type="text/html" id="toolbarDemo">
+		<div class="layui-form-item">
+			<!-- 添加权限组的按钮 -->
+			<div class="layui-inline">
+ 				<button class="layui-btn layui-btn-sm" lay-event="add">添加权限组</button>
+			</div>
+		</div>
+	</script>
+    <!-- 表格右侧栏的操作按钮模板 -->
+    <script type="text/html" id="barDemo">
+        <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+		<a class="layui-btn layui-btn-xs" lay-event="addAuthor">分配权限</a>
+		<a class="layui-btn layui-btn-xs" lay-event="delAuthor">删除权限</a>
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    </script>
+    
+    <!-- 分配权限的复选框模板 -->
+    <script type="text/html" id="addAuthorForm">
+        <form class="layui-form"  id="addAuthorForm" lay-filter="addAuthorForm">
+			<input type="text" name="groupId" autocomplete="off" class="layui-input" style="display:none;">
+  			<div class="layui-form-item">
+   				<label class="layui-form-label">选择权限</label>
+    			<div class="layui-input-block">
+					{{#
+						layui.each(d.data, function(index, item){  }}
+							<input type="checkbox" name="authorIds" value={{item.authorId}}  title="{{item.displayName}}">
+					{{# })  }}
+    			</div>
+  			</div>
+			<div class="layui-form-item" style="display:none">
+			    <div class="layui-input-block">
+			      <button class="layui-btn" lay-submit lay-filter="addAuthorForm-submit" id="addAuthorForm-submit">立即提交</button>
+			    </div>
+			</div>
+		</form>
+    </script>
+    
+    <!-- 删除权限的复选框模板 -->
+    <script type="text/html" id="delAuthorForm">
+        <form class="layui-form"  id="delAuthorForm" lay-filter="delAuthorForm">
+			<input type="text" name="groupId"  autocomplete="off" class="layui-input" style="display:none;"/>
+  			<div class="layui-form-item">
+   				<label class="layui-form-label">选择权限</label>
+    			<div class="layui-input-block">
+					{{#
+						layui.each(d.data, function(index, item){  }}
+							<input type="checkbox" name="authorIds" value="{{item.authorId}}"  title="{{item.displayName}}"/>
+					{{# })  }}
+    			</div>
+  			</div>
+			<div class="layui-form-item" style="display:none">
+			    <div class="layui-input-block">
+			      <button class="layui-btn" lay-submit lay-filter="delAuthorForm-submit" id="delAuthorForm-submit">立即提交</button>
+			    </div>
+			</div>
+		</form>
+    </script>
+    
+    <!-- 修改权限组表单模板 -->
+    <script type="text/html" id="updateAuthorGroupTempl">
+		<form class="layui-form"  id="updateAuthorGroupForm" lay-filter="updateAuthorGroupForm">
+  			<input type="text" name="id" required autocomplete="off" class="layui-input" style="display:none;">
+  			<div class="layui-form-item">
+   				<label class="layui-form-label">权限组名称</label>
+    			<div class="layui-input-block">
+      				<input type="text" name="displayName" required lay-verify="required"  autocomplete="off" class="layui-input">
+    			</div>
+  			</div>
+  			<div class="layui-form-item">
+    			<label class="layui-form-label">权限说明</label>
+    			<div class="layui-input-block">
+      				<input type="text" name="descs"  autocomplete="off" class="layui-input">
+   				</div>
+  			</div>
+			<div class="layui-form-item" style="display:none">
+			    <div class="layui-input-block">
+			      <button class="layui-btn" lay-submit lay-filter="updateAuthorGroupForm-submit" id="updateAuthorGroupForm-submit">立即提交</button>
+			    </div>
+			</div>
+		</form>
+    </script>
+    
+    <!-- 添加权限组表单模板 -->
+    <script type="text/html" id="addAuthorGroupForm">
+		<form class="layui-form"  id="addAuthorGroupForm" lay-filter="addAuthorGroupForm">
+  			<div class="layui-form-item">
+   				<label class="layui-form-label">权限组名称</label>
+    			<div class="layui-input-block">
+      				<input type="text" name="groupName" required lay-verify="required" autocomplete="off" class="layui-input">
+    			</div>
+  			</div>
+			<div class="layui-form-item">
+   				<label class="layui-form-label">显示名称</label>
+    			<div class="layui-input-block">
+      				<input type="text" name="displayName" required lay-verify="required" autocomplete="off" class="layui-input">
+    			</div>
+  			</div>
+  			<div class="layui-form-item">
+    			<label class="layui-form-label">选择权限</label>
+    			<div class="layui-input-block">
+					{{#
+						layui.each(d.data, function(index, item){  }}
+							<input type="checkbox" name="authorIds" value="{{item.authorId}}"  title="{{item.displayName}}"/>
+					{{# })  }}
+    			</div>
+  			</div>
+  			<div class="layui-form-item">
+    			<label class="layui-form-label">权限说明</label>
+    			<div class="layui-input-block">
+      				<textarea name="descs" placeholder="请输入内容" class="layui-textarea"></textarea>
+   				</div>
+  			</div>
+			<div class="layui-form-item" style="display:none">
+			    <div class="layui-input-block">
+			      <button class="layui-btn" lay-submit lay-filter="addAuthorGroupForm-submit" id="addAuthorGroupForm-submit">立即提交</button>
+			    </div>
+			</div>
+		</form>
+    </script>
+    <script type="text/html" id="authorListTpl">
+  		{{#  if(d.authorList.length == 0){ }}
+    				无
+  			{{#  } else { 
+    				layui.each(d.authorList, function(index, item){   }}
+						<span>{{ item.displayName }}</span>
+				{{# })  }}
+  		{{#  } }}
+	</script>
+</body>
+<script src="../public/layui/layui.js"></script>
+<script>
+    layui.use(['table','upload','element','form','laytpl'], function(){
+      var table = layui.table;
+      var upload = layui.upload;
+      var element = layui.element;
+      var form = layui.form;
+      var $ = layui.jquery;
+      var laytpl = layui.laytpl;
+      //向后台请求学生成绩数据，渲染表格
+      var authorGroupTable = table.render({
+        elem: '#authorGroupTable'
+        ,url:'../api/AuthorGroup/page'
+        ,toolbar: '#toolbarDemo' 	//设置头部左侧工具栏
+        ,defaultToolbar: []			//设置头部右侧工具栏
+        ,title: '权限组数据表'		//设置表格标题
+        ,cols: [[ 				//设置表头数据项
+        	 {field: 'id', title: '序号', width:80, sort: true, type:"numbers"}
+        	 ,{field: 'displayName', title: '权限组名称', width:80}
+        	 ,{field: 'author', title: '权限', width:200,templet:'#authorListTpl'}
+        	 ,{field: 'descs', title: '权限说明', width:200} 
+        	 ,{fixed: 'right', title: '操作',width:300, align:'center', toolbar: '#barDemo'} //右侧固定toolbar
+        ]]
+        ,page: true				//开启分页
+        ,limit: 10				//设置一页大小
+      });
+      //为头部工具栏绑定事件
+      table.on('toolbar(authorGroupTable)', function(obj){
+        var checkStatus = table.checkStatus(obj.config.id);
+        switch(obj.event){
+          //添加权限组
+          case 'add':
+	          addAuthorGroup($,form,layer,laytpl);
+	          break;  
+        };
+      });
+      
+      //为表格右侧工具栏绑定事件
+      table.on('tool(authorGroupTable)', function(obj){
+        var data = obj.data;
+        console.log(data)
+          //删除权限组
+        if(obj.event === 'del'){
+		  	deleteAuthorGroup($,layer,data,obj);
+		  //编辑权限组
+        } else if(obj.event === 'edit'){
+          	updateAuthorGroup($,layer,form,data);
+          //分配权限
+        } else if(obj.event === 'addAuthor'){
+        	addAuthor($,layer,form,data,laytpl);
+          //删除权限
+        } else if(obj.event === 'delAuthor'){
+            delAuthor($,layer,form,data,laytpl);
+        }
+      });
+      
+      //绑定修改权限组表单提交事件处理函数
+      form.on('submit(updateAuthorGroupForm-submit)', function(data){
+    	  //向后台发起修改学生信息请求
+    	  postUpdateAuthorGroup($,data);
+    	  //阻止表单跳转
+    	  return false; 
+      });
+      //绑定处理添加权限组表单提交事件的函数
+      form.on('submit(addAuthorGroupForm-submit)', function(data){
+    	  //layui获取的checkbox不全，使用jq手动获取
+    	  data.field.authorIds = getAuthorCheckedbox($);
+    	  console.log(data.field);
+    	  //向后台发起添加学生信息请求
+    	  postAddAuthorGroup($,data);
+    	  //阻止表单跳转
+    	  return false; 
+      });
+      
+      //绑定为权限组添加权限的处理函数
+      form.on('submit(addAuthorForm-submit)', function(data){
+    	  //layui获取的checkbox不全，使用jq手动获取
+    	  data.field.authorIds = getAuthorCheckedbox($);
+    	  console.log(data.field);
+    	  //向后台发起添加学生信息请求
+    	  postAddAuthor($,data);
+    	  //阻止表单跳转
+    	  return false; 
+      });
+      
+      //绑定为权限组删除权限的处理函数
+      form.on('submit(delAuthorForm-submit)', function(data){
+    	  //layui获取的checkbox不全，使用jq手动获取
+    	  data.field.authorIds = getAuthorCheckedbox($);
+    	  console.log(data.field);
+    	  //向后台发起请求
+    	  postDelAuthor($,data);
+    	  //阻止表单跳转
+    	  return false; 
+      });
+    });
+
+  	//添加权限组处理函数
+  	function addAuthorGroup($,form,layer,laytpl){
+  		//向后台请求所有的权限
+  		$.get("../api/Author/all",function(data){
+  			//获取添加权限组模板
+			var template = addAuthorGroupForm.innerHTML;
+  			//渲染模板
+			laytpl(template).render(data,function(html){
+				//弹出
+				layer.open({
+					title:"添加权限组"
+					,area: ['500px', '400px']
+					,content: html
+					,success: function(){
+						form.val("addAuthorGroupForm");   //触发表单checkbox生效
+					}
+	  			    ,yes: function(index, layero){
+	  			        //触发表单提交事件
+	  			        $("#addAuthorGroupForm-submit")[0].click();
+	  			        //关闭对话框
+	  			      	layer.close(index);
+	  			    }
+				})
+			})
+  		})
+  	}
+  	//删除权限组处理函数
+  	function deleteAuthorGroup($,layer,data,obj){
+  		layer.confirm('真的要删除该行么', function(index){
+      	  $.post("../api/AuthorGroup/delete",{id:data.id},function(data){
+      		  if(data.code == 0){
+      			  //删除成功
+      			  layer.alert(data.msg);
+      			  obj.del();
+      		  }else{
+      			  //删除失败
+      			  layer.alert(data.msg);
+      		  }
+      	  })
+          layer.close(index);
+        });
+  	}
+  	//修改权限组处理函数
+  	function updateAuthorGroup($,layer,form,data){
+  		layer.open({
+      	  title: '修改权限组'
+      	  ,content: $("#updateAuthorGroupTempl").html()
+      	  ,area: ['500px', '400px']
+          ,yes: function(index, layero){
+        		//触发表单提交事件
+        		$("#updateAuthorGroupForm-submit")[0].click();
+        		//关闭对话框
+      	    	layer.close(index);
+      	  }
+        });  
+        form.val("updateAuthorGroupForm",data);
+  	}
+  	//权限组添加权限处理函数
+  	function addAuthor($,layer,form,data,laytpl){
+  		//获取权限组尚未添加的权限
+  		$.get("../api/AuthorGroup/queryhasNoAuthor",{groupId:data.id},function(res){
+  			//如果数据为空
+  			if(res.data.length == 0)
+  				layer.alert("没有可以添加的权限");
+  			else{
+  				//获取权限多选框渲染模板
+  				var template = addAuthorForm.innerHTML;
+  				//渲染模板
+  				laytpl(template).render(res,function(html){
+  					//弹出渲染好的表单
+  					layer.open({
+  	  					title: '添加权限'
+  	  			      	,content: html
+  	  			      	,area: ['500px', '400px']
+  						,success: function(layero, index){  //弹出后回调
+  		  	  				form.val("addAuthorForm",{"groupId":data.id});    //为表单赋值
+  						}
+  	  			        ,yes: function(index, layero){
+  	  			        	//触发表单提交事件
+  	  			        	$("#addAuthorForm-submit")[0].click();
+  	  			        	//关闭对话框
+  	  			      	    layer.close(index);
+  	  			      	 }
+  	  				})
+  				})
+  			}
+  		})
+  	}
+    //权限组删除权限处理函数
+	function delAuthor($,layer,form,data,laytpl){
+    	if(data.authorList.length == 0){
+    		layer.alert("没有可以删除的权限");
+    		return ;
+    	}
+		//获取权限组已添加的权限
+  		$.get("../api/AuthorGroup/queryAuthorByGid",{groupId:data.id},function(res){
+  			//如果数据为空
+  			if(res.data.length == 0)
+  				layer.alert("没有可以删除的权限");
+  			else{
+  				//获取权限多选框渲染模板
+  				var template = delAuthorForm.innerHTML;
+  				//渲染模板
+  				laytpl(template).render(res,function(html){
+  					//弹出渲染好的表单
+  					layer.open({
+  	  					title: '删除权限'
+  	  			      	,content: html
+  	  			      	,area: ['500px', '400px']
+  						,success: function(layero, index){  //弹出后回调
+		  	  				form.val("delAuthorForm",{"groupId":data.id});    //为表单赋值
+						}
+  	  			        ,yes: function(index, layero){
+  	  			        	//触发表单提交事件
+  	  			        	$("#delAuthorForm-submit")[0].click();
+  	  			        	//关闭对话框
+  	  			      	    layer.close(index);
+  	  			      	 }
+  	  				})
+  				})
+  			}
+  		})
+  	}
+  	//向后台发起修改权限组的请求
+  	function postUpdateAuthorGroup($,data){
+  		$.post("../api/AuthorGroup/update",data.field,function(data){
+  		  //修改成功
+  		  if(data.code == 0){
+  			  layer.alert(data.msg,function(){
+  				window.location.reload();
+  			  });  
+  		  }else{
+  			  //修改失败
+  			  layer.alert(data.msg);
+  		  }	  
+  	  })
+  	}
+  	//向后台发起添加权限组的请求
+  	function postAddAuthorGroup($,data){
+  		$.post("../api/AuthorGroup/add",data.field,function(data){
+  		  //添加成功
+  		  if(data.code == 0){
+  			  layer.alert(data.msg,function(){
+  				  window.location.reload();
+  			  });
+  		  }else{
+  			  //添加失败
+  			  layer.alert(data.msg);
+  		  }	  
+  	  	})
+  	}
+  	//向后台发起向权限组添加权限的请求
+  	function postAddAuthor($,data){
+  		$.post("../api/AuthorGroup/addAuthor",data.field,function(data){
+    		  //添加成功
+    		  if(data.code == 0){
+    			  layer.alert(data.msg,function(){
+    				  window.location.reload();
+    			  });
+    		  }else{
+    			  //添加失败
+    			  layer.alert(data.msg);
+    		  }	  
+    	})
+  	}
+  	//向后台发起向权限组删除权限的请求
+  	function postDelAuthor($,data){
+  		$.post("../api/AuthorGroup/deleteAuthors",data.field,function(data){
+    		  //删除成功
+    		  if(data.code == 0){
+    			  layer.alert(data.msg,function(){
+    				  window.location.reload();
+    			  });
+    		  }else{
+    			  //删除失败
+    			  layer.alert(data.msg);
+    		  }	  
+    	})
+  	}
+  	//获取的checkbox的值
+  	function getAuthorCheckedbox($){
+  		var retStr = "";
+  		$("[type='checkbox']:checked").each(function(item,index){
+  			retStr += $(this).val() + ",";
+  		})
+  		return retStr.substr(0,retStr.lastIndexOf(","));
+  	}
+</script>
+</html>

@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../public/layui/css/layui.css">
+</head>
+<body>
+    <table class="layui-hide" id="stuScoreTable" lay-filter="stuScoreTable"></table>
+
+	<!-- 表格顶部工具栏 -->
+    <script type="text/html" id="toolbarDemo">
+		<div class="layui-form-item">
+			<!-- 添加学生信息的按钮 -->
+			<div class="layui-inline">
+ 				<button class="layui-btn layui-btn-sm" lay-event="add">添加</button>
+			</div>
+			<!-- 输入名字搜索 -->
+  			<div class="layui-inline">
+    			<div class="layui-input-inline" style="width: 170px;">
+     			 <input type="text" name="filter-stuName" placeholder="学生姓名"  autocomplete="off" class="layui-input">
+    			</div>
+				<div class="layui-input-inline" style="width:auto">
+     			 	<button type="button" lay-event="filterName" class="layui-btn layui-btn-sm layui-btn-primary" style="height:38px">
+  						<i class="layui-icon">&#xe615;</i>
+					</button>
+    			</div>
+  			</div>
+		</div>
+	</script>
+    <!-- 表格右侧栏的操作按钮模板 -->
+    <script type="text/html" id="barDemo">
+        <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    </script>
+    
+    <!-- 修改学生成绩表单模板 -->
+    <script type="text/html" id="updateStuScoreTempl">
+		<form class="layui-form"  id="editStuInfoForm" lay-filter="updateStuScoreForm">
+  			<input type="text" name="id" required autocomplete="off" class="layui-input" style="display:none;">
+  			<div class="layui-form-item">
+   				<label class="layui-form-label">姓名</label>
+    			<div class="layui-input-block">
+      				<input type="text" name="realName" required  disabled  autocomplete="off" class="layui-input">
+    			</div>
+  			</div>
+  			<div class="layui-form-item">
+    			<label class="layui-form-label">python</label>
+    			<div class="layui-input-block">
+      				<input type="number" name="python" required  lay-verify="score"  autocomplete="off" class="layui-input">
+    			</div>
+  			</div>
+  			<div class="layui-form-item">
+    			<label class="layui-form-label">linux</label>
+    			<div class="layui-input-block">
+      				<input type="number" name="linux" required  lay-verify="score"  autocomplete="off" class="layui-input">
+   				</div>
+  			</div>
+			<div class="layui-form-item">
+    			<label class="layui-form-label">sql</label>
+    			<div class="layui-input-block">
+      				<input type="number" name="sql" required  lay-verify="score"  autocomplete="off" class="layui-input">
+   				</div>
+  			</div>
+			<div class="layui-form-item">
+    			<label class="layui-form-label">java</label>
+    			<div class="layui-input-block">
+      				<input type="number" name="java" required  lay-verify="score"  autocomplete="off" class="layui-input">
+   				</div>
+  			</div>
+			<div class="layui-form-item" style="display:none">
+			    <div class="layui-input-block">
+			      <button class="layui-btn" lay-submit lay-filter="updateStuScoreForm-submit" id="updateStuScoreForm-submit">立即提交</button>
+			    </div>
+			</div>
+		</form>
+    </script>
+    
+    <!-- 添加学生成绩表单模板 -->
+    <script type="text/html" id="addStuScoreForm">
+		<form class="layui-form"  id="addStuScoreForm" lay-filter="addStuScoreForm">
+  			<input type="text" name="id" required autocomplete="off" class="layui-input" style="display:none;">
+			<div class="layui-form-item">
+			    <label class="layui-form-label">姓名</label>
+			    <div class="layui-input-block">
+					<select name="realName" lay-verify="addStuScoreNameSelect" lay-search>
+ 						{{#  layui.each(d, function(index, item){ }}
+							<option value="{{ item.realName }}" >{{ item.realName }}</option>
+  						{{#  }) }}
+					</select> 
+			    </div>
+			</div>
+			<div class="layui-form-item">
+    			<label class="layui-form-label">python</label>
+    			<div class="layui-input-block">
+      				<input type="number" name="python" required  lay-verify="score"  autocomplete="off" class="layui-input">
+    			</div>
+  			</div>
+  			<div class="layui-form-item">
+    			<label class="layui-form-label">linux</label>
+    			<div class="layui-input-block">
+      				<input type="number" name="linux" required  lay-verify="score"  autocomplete="off" class="layui-input">
+   				</div>
+  			</div>
+			<div class="layui-form-item">
+    			<label class="layui-form-label">sql</label>
+    			<div class="layui-input-block">
+      				<input type="number" name="sql" required  lay-verify="score"  autocomplete="off" class="layui-input">
+   				</div>
+  			</div>
+			<div class="layui-form-item">
+    			<label class="layui-form-label">java</label>
+    			<div class="layui-input-block">
+      				<input type="number" name="java" required  lay-verify="score"  autocomplete="off" class="layui-input">
+   				</div>
+  			</div>
+			<div class="layui-form-item" style="display:none">
+			    <div class="layui-input-block">
+			      <button class="layui-btn" lay-submit lay-filter="addStuScoreForm-submit" id="addStuScoreForm-submit">立即提交</button>
+			    </div>
+			</div>
+		</form>
+    </script>
+</body>
+<script src="../public/layui/layui.js"></script>
+<script>
+    layui.use(['table','upload','element','form','laytpl'], function(){
+      var table = layui.table;
+      var upload = layui.upload;
+      var element = layui.element;
+      var form = layui.form;
+      var $ = layui.jquery;
+      var laytpl = layui.laytpl;
+      //向后台请求学生成绩数据，渲染表格
+      var stuScoreTable = table.render({
+        elem: '#stuScoreTable'
+        ,url:'../api/StuScore/queryByPage'
+        ,toolbar: '#toolbarDemo' 	//设置头部左侧工具栏
+        ,defaultToolbar: [			//设置头部右侧工具栏
+        {
+        	title: '导出'
+   	        ,layEvent: 'STUSCORETABLE_EXPORT'
+   	        ,icon: 'layui-icon-upload-circle'
+        }
+        ,{ 
+	         title: '导入'
+	         ,layEvent: 'STUSCORETABLE_IMPORT'
+	         ,icon: 'layui-icon-download-circle'
+        }]
+        ,title: '学生信息数据表'		//设置表格标题
+        ,cols: [[ 				//设置表头数据项
+        	 {field: 'id', title: 'ID', width:80, sort: true, fixed: 'left'}
+        	 ,{field: 'realName', title: '性名', width:80}
+        	 ,{field: 'python', title: 'Python', width:80}
+        	 ,{field: 'linux', title: 'Linux', width:80} 
+        	 ,{field: 'sql', title: 'SQL', width: 80}
+        	 ,{field: 'java', title: 'Java', width: 80, sort: true}
+        	 ,{field: 'sum', title: '总分', width: 80,sort: true,
+        		 templet: function(d){
+        		        return d.python + d.linux + d.sql + d.java
+        	      }
+        	 }
+        	 ,{fixed: 'right', title: '操作',width:150, align:'center', toolbar: '#barDemo'} //右侧固定toolbar
+        ]]
+        ,page: true				//开启分页
+        ,limit: 10				//设置一页大小
+      });
+      //为头部工具栏绑定事件
+      table.on('toolbar(stuScoreTable)', function(obj){
+        var checkStatus = table.checkStatus(obj.config.id);
+        switch(obj.event){
+          //查找姓名模糊查询学生成绩事件
+          case 'filterName':
+        	 filterByName($,stuScoreTable,layer);
+	         break;
+          //数据导出事件
+          case 'STUSCORETABLE_EXPORT':
+             window.open("../api/StuScore/export");
+          	 break;
+          //添加学生信息数据事件
+          case 'add':
+        	 addStuScore($,form,layer,laytpl);
+         	 break;  
+        };
+      });
+      
+      //为表格右侧工具栏绑定事件
+      table.on('tool(stuScoreTable)', function(obj){
+        var data = obj.data;
+        console.log(data)
+        if(obj.event === 'del'){
+		  	deleteStuScore($,layer,data,obj);
+        } else if(obj.event === 'edit'){
+          //修改学生信息
+          layer.msg('edit');
+          updateStuScore($,layer,form,data);
+        }
+      });
+      
+      //绑定修改学生信息表单提交事件处理函数
+      form.on('submit(updateStuScoreForm-submit)', function(data){
+    	  //向后台发起修改学生信息请求
+    	  postUpdateStuScore($,data);
+    	  //阻止表单跳转
+    	  return false; 
+      });
+      //绑定处理添加学生信息表单提交事件的函数
+      form.on('submit(addStuScoreForm-submit)', function(data){
+    	  //向后台发起添加学生信息请求
+    	  postAddStuScore($,data);
+    	  //阻止表单跳转
+    	  return false; 
+      });
+      //加载文件上传组件，点击导入图标，触发上传组件
+      upload.render({
+          elem: "[lay-event='STUSCORETABLE_IMPORT']"
+         ,url: '../api/StuScore/import'
+         ,accept: 'file'
+         ,exts: 'xls'
+         ,done: function(res, index, upload){
+        	 layer.alert(res.msg);
+         }
+      	 ,error: function(index, upload){
+
+    	 }
+      });
+    });
+  	//根据姓名模糊查找学生成绩
+  	function filterByName($,stuScoreTable,layer){
+  		var keyWord = $("[name='filter-stuName']").val();
+	   	 if(keyWord == ''){
+	   		layer.alert("必须输入关键字！");
+	    		return;
+	   	 }
+	   	 //重新渲染表格
+	   	 stuScoreTable.reload({
+	        	url: '../api/StuScore/queryByLikeName'
+	        	,where: { //额外参数
+	        		realName: keyWord
+	        	}
+	        	,page: {
+	        	    curr: 1 //重新从第 1 页开始
+	        	}
+	     })
+  	}
+  	//添加学生成绩数据处理函数
+  	function addStuScore($,form,layer,laytpl){
+  		//向后台请求未录入成绩的学生名单，渲染到选择添加学生成绩的select表单模板
+	    $.get("../api/StuScore/queryNoScore",function(data){
+	    	var data = data.data;  //获取数据
+	    	var getTpl = addStuScoreForm.innerHTML		//获取模板内容
+	  		laytpl(getTpl).render(data, function(html){   //渲染
+	  			layer.open({							  //把渲染后的结果给layer弹出
+	  	    		title: '添加学生成绩'
+	  	          	,content: html
+	  	          	,area: ['500px', '400px']
+	  	  			,success: function(layero, index){  //弹出后回调
+	  	  				form.val("addStuScoreForm");    //加载form模块，触发select生效
+		  	  			//表单验证
+		  	  	        form.verify({
+		  	  	      	  //验证学生成绩是否符合要求
+		  	  	      	  score: function(value,item){
+		  	  	      		  if(value > 100 || value < 0){
+		  	  	      			  return "分数必须在0-100之间";
+		  	  	      		  }
+		  	  	      	  }
+		  	  	        });
+	  	  		  	}
+	  	            ,yes: function(index, layero){      //点击确定后回调
+	  	            	//触发表单提交事件
+	  	            	$("#addStuScoreForm-submit")[0].click();
+	  	            	//关闭对话框
+	  	          	    layer.close(index);
+	  	          	 }
+	  	    	});
+	  		});	  
+	    })
+  	}
+  	//删除学生成绩处理函数
+  	function deleteStuScore($,layer,data,obj){
+  		layer.confirm('真的要删除该行么', function(index){
+      	  $.post("../api/StuScore/deleteById",{id:data.id},function(data){
+      		  if(data.code == 0){
+      			  //删除成功
+      			  layer.alert(data.msg);
+      			  obj.del();
+      		  }else{
+      			  //删除失败
+      			  layer.alert(data.msg);
+      		  }
+      	  })
+          layer.close(index);
+        });
+  	}
+  	//修改学生成绩处理函数
+  	function updateStuScore($,layer,form,data){
+  		layer.open({
+      	  title: '修改学生成绩'
+      	  ,content: $("#updateStuScoreTempl").html()
+      	  ,area: ['500px', '400px']
+          ,yes: function(index, layero){
+        		//触发表单提交事件
+        		$("#updateStuScoreForm-submit")[0].click();
+        		//关闭对话框
+      	    	layer.close(index);
+      	  }
+        });  
+        form.val("updateStuScoreForm",data);
+        //表单验证
+        form.verify({
+      	  //验证学生成绩是否符合要求
+      	  score: function(value,item){
+      		  if(value > 100 || value < 0){
+      			  return "分数必须在0-100之间";
+      		  }
+      	  }
+        });
+  	}
+  	//向后台发起修改学生成绩的请求
+  	function postUpdateStuScore($,data){
+  		$.post("../api/StuScore/update",data.field,function(data){
+  		  //修改成功
+  		  if(data.code == 0){
+  			  layer.alert(data.msg,function(){
+  				window.location.reload();
+  			  });  
+  		  }else{
+  			  //修改失败
+  			  layer.alert(data.msg);
+  		  }	  
+  	  })
+  	}
+  	//向后台发起添加学生信息的请求
+  	function postAddStuScore($,data){
+  		$.post("../api/StuScore/add",data.field,function(data){
+  		  //添加成功
+  		  if(data.code == 0){
+  			  layer.alert(data.msg,function(){
+  				  window.location.reload();
+  			  });
+  		  }else{
+  			  //添加失败
+  			  layer.alert(data.msg);
+  		  }	  
+  	  	})
+  	}
+</script>
+</html>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>layout 后台大布局 - Layui</title>
+  <link rel="stylesheet" href="../public/layui/css/layui.css">
+</head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+  <div class="layui-header">
+    <div class="layui-logo">layui 后台布局</div>
+    <!-- 头部区域（可配合layui已有的水平导航） -->
+    <ul class="layui-nav layui-layout-left">
+      <li class="layui-nav-item"><a href="">学生管理</a></li>
+       <li class="layui-nav-item"><a href="">分数管理</a></li>
+       <li class="layui-nav-item">
+         <a href="javascript:;">统计分析</a>
+         <dl class="layui-nav-child">
+           <dd><a href="javascript:;">学生统计</a></dd>
+           <dd><a href="javascript:;">分数统计</a></dd>
+         </dl>
+       </li>
+       <li class="layui-nav-item">
+         <a href="javascript:;">权限管理</a>
+         <dl class="layui-nav-child">
+            <dd><a href="javascript:;">权限组管理</a></dd>
+            <dd><a href="javascript:;">管理员管理</a></dd>
+         </dl>
+       </li>
+    </ul>
+    <ul class="layui-nav layui-layout-right">
+      <li class="layui-nav-item">
+        <a href="javascript:;">
+          <img src="http://t.cn/RCzsdCq" class="layui-nav-img">
+         	<span id="adminName">贤心<span>
+        </a>
+        <dl class="layui-nav-child">
+          <dd><a href="javascript:;" id="adminChangePsd">安全设置</a></dd>
+        </dl>
+      </li>
+      <li class="layui-nav-item" id="logout"><a href="javascript:;" >退了</a></li>
+    </ul>
+  </div>
+  
+  <div class="layui-side layui-bg-black">
+    <div class="layui-side-scroll">
+      <!-- 左侧导航区域 -->
+      <ul class="layui-nav layui-nav-tree"  lay-filter="demo">
+        <li class="layui-nav-item">
+        	<a href="javascript:;" link="stuManager.html">学生管理</a>
+        </li>
+        <li class="layui-nav-item" >
+        	<a href="javascript:;" link="scoreManager.html">分数管理</a>
+        </li>
+        <li class="layui-nav-item">
+          <a href="javascript:;">统计分析</a>
+          <dl class="layui-nav-child">
+            <dd><a href="javascript:;" link="stuCount.html">学生统计</a></dd>
+            <dd><a href="javascript:;" link="scoreCount.html">分数统计</a></dd>
+          </dl>
+        </li>
+        <li class="layui-nav-item">
+          <a href="javascript:;">权限管理</a>
+          <dl class="layui-nav-child">
+            <dd><a href="javascript:;" link="authorManager.html">权限组管理</a></dd>
+            <dd><a href="javascript:;" link="adminManager.html">管理员管理</a></dd>
+          </dl>
+        </li>
+      </ul>
+    </div>
+  </div>
+  
+  <div class="layui-body" style="overflow:hidden">
+    <iframe id="iframe" src="stuManager.html" style="width:100%;height:100%"></iframe>
+  </div>
+  
+  <div class="layui-footer">
+    <!-- 底部固定区域 -->
+    © layui.com - 底部固定区域
+  </div>
+  <!-- 修改当前管理员的密码模板 -->
+  <script type="text/html" id="adminChangePsdTempl">
+	<form class="layui-form"  id="changeCurrentAdminPwdForm" lay-filter="changeCurrentAdminPwdForm">
+			<div class="layui-form-item">
+   				<label class="layui-form-label">原密码</label>
+    			<div class="layui-input-block">
+      				<input type="password" name="oldPassword" required lay-verify="changeSelPwd" 
+						autocomplete="off" class="layui-input">
+    			</div>
+				<label class="layui-form-label">新密码</label>
+    			<div class="layui-input-block">
+      				<input type="password" name="newPassword" required lay-verify="changeSelPwd" 
+						autocomplete="off" class="layui-input">
+    			</div>
+  			</div>
+			<div class="layui-form-item" style="display:none">
+			    <div class="layui-input-block">
+			      <button class="layui-btn" lay-submit lay-filter="changeCurrentAdminPwdForm-submit" id="changeCurrentAdminPwdForm-submit">立即提交</button>
+			    </div>
+			</div>
+		</form>
+  </script>
+</div>
+<script src="../public/layui/layui.js"></script>
+<script>
+	//JavaScript代码区域
+	layui.use(['element','layer','jquery','form'], function(){
+		var element = layui.element;
+		var layer = layui.layer;
+		var $ = layui.jquery;
+		var form = layui.form;
+        //监听导航点击
+        element.on('nav(demo)', function(elem){
+          //获取跳转链接
+          var link = elem[0].getAttribute("link");
+          if(link)	//链接不为空，跳转
+          	document.getElementById("iframe").src = link;
+        });
+        //绑定退出事件
+        $("#logout").click(function(){
+        	$.post("../api/Admin/logout",function(data){
+        		layer.alert(data.msg,function(){
+        			window.location.reload();
+        		});
+        	})
+        })
+		//获取当前管理员信息
+		var currentAdmin = getCurrentAdmin($);
+        //添加安全设置被点击事件
+        $("#adminChangePsd").click(function(){
+        	layer.open({
+        		title: "安全设置"
+        		,content: $("#adminChangePsdTempl").html()
+        		,yes: function(){
+        			$("#changeCurrentAdminPwdForm-submit").click();
+        		}
+        	});
+        });
+        //监听安全设置表单被提交时间
+        form.on("submit(changeCurrentAdminPwdForm-submit)",function(data){
+        	postChangeCurrAdminPwd($,data.field,layer)
+        	return false
+        })
+        //表单校验
+        form.verify({
+        	changeSelPwd:function(value, item){  
+        		if(!value) return "密码不能为空"; 
+        		if(value != "" && ! /^[\S]{6,12}$/.test(value)){
+            		return '密码必须6到12位，且不能出现空格';
+            	}
+            }
+        })
+	});
+	//向后台获取当前管理员信息
+    function getCurrentAdmin($){
+    	var currentAdmin;
+    	$.get("../api/Admin/currentAdminInfo",function(data){
+        	if(data.code == 0){
+        		currentAdmin = data.data[0];
+        		//把当前管理员名字渲染到页面
+                $("#adminName").text(currentAdmin.realName);
+        	}
+        })
+    }
+	//向后台请求修改当前管理员密码
+	function postChangeCurrAdminPwd($,data,layer){
+		$.post("../api/Admin/updateCurrentAdminPwd",data,function(data){
+			layer.alert(data.msg);
+		})
+	}
+</script>
+</body>
+</html>

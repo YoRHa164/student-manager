@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../public/layui/css/layui.css">
+</head>
+<body style="padding:20px 20px 0 20px">
+  
+  	<div class="layui-fluid">
+  		<div class="layui-row layui-col-space10">
+		   <div class="layui-col-xs12 layui-col-sm6 layui-col-md6">
+		   		<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+    		    <div id="python" style="width: 100%;height:300px;margin-bottom:10px"></div>
+		   </div>
+		   <div class="layui-col-xs12 layui-col-sm6 layui-col-md6">
+		      	<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+    			<div id="java" style="width: 100%;height:300px;margin-bottom:10px"></div>
+		   </div>
+		</div>
+		<div class="layui-row layui-col-space10">
+		   <div class="layui-col-xs12 layui-col-sm6 layui-col-md6">
+		   		<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+    		    <div id="linux" style="width: 100%;height:300px;margin-bottom:10px"></div>
+		   </div>
+		   <div class="layui-col-xs12 layui-col-sm6 layui-col-md6">
+		      	<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+    			<div id="sql" style="width: 100%;height:300px;margin-bottom:10px"></div>
+		   </div>
+		</div>
+		<div class="layui-row">
+		   <div class="layui-col-xs12 layui-col-sm12 layui-col-md6">
+		      	<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+    			<div id="scoreBarAll" style="width: 100%;height:400px;"></div>
+		   </div>
+		   <div class="layui-col-xs12 layui-col-sm12 layui-col-md6">
+		      	<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+    			<div id="sumScorePip" style="width: 100%;height:400px;"></div>
+		   </div>
+		</div>
+		<div class="layui-row">
+		   <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+		      	<h2>单科成绩检索</h2>
+		      	<!-- 搜索输入框 -->
+		      	<form class="layui-form" style="margin-top:20px" lay-filter="searchSingleScoreForm" id="searchSingleScoreForm">
+			    	<div class="layui-form-item">
+			    	  <div class="layui-inline">
+					    <label class="layui-form-label" style="text-align:center">科目</label>
+					    <div class="layui-input-inline" style="width: 100px;">
+					      <select name="subjectName" lay-verify="require">
+					      	<option value="python">python</option>
+					      	<option value="linux">linux</option>
+					      	<option value="java">java</option>
+					      	<option value="sql">sql</option>
+					      </select>
+					    </div>
+					  </div>
+					  <div class="layui-inline">
+					    <label class="layui-form-label" style="text-align:center">范围</label>
+					    <div class="layui-input-inline" style="width: 150px;">
+					      <input type="number" name="minScore" autocomplete="off" required lay-verify="minSingleScore" class="layui-input">
+					    </div>
+					    <div class="layui-form-mid">-</div>
+					    <div class="layui-input-inline" style="width: 150px;">
+					      <input type="number" name="maxScore" autocomplete="off" required lay-verify="maxSingleScore" class="layui-input">
+					    </div>
+					    <div class="layui-input-inline" style="width:auto">
+					    	<button style="width:40px;height:38px;" lay-submit lay-filter="searchSingleScoreForm-submit">
+					    		<i class="layui-icon layui-icon-search"></i>
+					    	</button>
+					    </div>
+					  </div>
+					</div>
+			    </form>
+		      	<table id="singleSubj-SearchTable" lay-filter="singleSubj-SearchTable">
+		      		
+		      	</table>
+		   </div>
+		</div>
+		<div class="layui-row">
+		   <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+		      	<h2>总分检索</h2>
+		      	<!-- 搜索输入框 -->
+		      	<form class="layui-form" style="margin-top:20px" lay-filter="searchSumScoreForm" id="searchSumScoreForm">
+			    	<div class="layui-form-item">
+					  <div class="layui-inline">
+					    <label class="layui-form-label" style="text-align:center">范围</label>
+					    <div class="layui-input-inline" style="width: 150px;">
+					      <input type="number" name="minScore" autocomplete="off" required lay-verify="minSumScore" class="layui-input">
+					    </div>
+					    <div class="layui-form-mid">-</div>
+					    <div class="layui-input-inline" style="width: 150px;">
+					      <input type="number" name="maxScore" autocomplete="off" required lay-verify="maxSumScore" class="layui-input">
+					    </div>
+					    <div class="layui-input-inline" style="width:auto">
+					    	<button style="width:40px;height:38px;" lay-submit lay-filter="searchSumScoreForm-submit" id="searchSumScoreForm-submit">
+					    		<i class="layui-icon layui-icon-search"></i>
+					    	</button>
+					    </div>
+					  </div>
+					</div>
+			    </form>
+		      	<table id="sumSubj-SearchTable" lay-filter="sumSubj-SearchTable">
+		      		
+		      	</table>
+		   </div>
+		</div>
+  	</div>
+    
+</body>
+<script src="../public/layui/layui.js"></script>
+<script src="../public/js/echarts.min.js"></script>
+<script type="text/javascript">
+    
+    layui.use(['jquery','form','table'],function(){
+    	var $ = layui.jquery;
+    	var form = layui.form;
+    	var table = layui.table;
+    	//获取图表数据，渲染
+    	getDataRender($);
+    	//表单验证
+    	form.verify({
+    		minSumScore: function(val,index){
+    			if(!val){
+    				return "最小总分不能为空";
+    			}	
+    			if(Number.parseInt(val)<0 || Number.parseInt(val)>400){
+    				return "总分不能小于0或者大于400";
+    			}	
+    		},
+    		maxSumScore: function(val,index){
+    			var minScore = $("#searchSumScoreForm input[name='minScore']").val();
+    			if(Number.parseInt(val) < Number.parseInt(minScore))
+    				return "最大总分不能小于最小总分";	
+    			if(!val)
+    				return "最大总分不能为空";
+    			if(Number.parseInt(val)<0 || Number.parseInt(val)>400){
+    				return "总分不能小于0或者大于400";
+    			}	
+    		},
+    		minSingleScore: function(val,index){
+    			if(!val){
+    				return "最小分数不能为空";
+    			}	
+    			if(Number.parseInt(val)<0 || Number.parseInt(val)>100)
+    				return "单科成绩不能小于0或者大于100";
+    		},
+    		maxSingleScore: function(val,index){
+    			var minScore = $("#searchSumScoreForm input[name='minScore']").val();
+    			if(Number.parseInt(val) < Number.parseInt(minScore))
+    				return "最大分数不能小于最小分数";
+    			if(!val)
+    				return "最大分数不能为空";
+    			if(Number.parseInt(val)<0 || Number.parseInt(val)>100)
+    				return "单科成绩不能小于0或者大于100";
+    		}
+    	})
+    	//表单事件提交监听
+    	form.on("submit(searchSingleScoreForm-submit)",function(data){
+    		console.log(data.field);
+    		postSingleScoreSearch($,table,data.field);
+    		return false;
+    	})
+    	form.on("submit(searchSumScoreForm-submit)",function(data){
+    		console.log(data.field);
+    		postSumScoreSearch($,table,data.field);
+    		return false;
+    	})
+    })
+    //获取图表数据，渲染
+    function getDataRender($){
+    	//获取python数据,并渲染
+    	var pythonCount = getSubjectDataRender($,"python");
+    	//获取java数据,并渲染
+    	var javaCount = getSubjectDataRender($,"java");
+    	//获取linux数据,并渲染
+    	var linuxCount = getSubjectDataRender($,"linux");
+    	//获取sql数据,并渲染
+    	var sqlCount = getSubjectDataRender($,"sql");
+    	//渲染各学科汇总条状图表
+    	randerTatalBarChart(pythonCount,javaCount,linuxCount,sqlCount);
+    	//渲染总分扇形图
+    	rederSumPipChart($);
+    }
+    //渲染单个学科图表
+    function getSubjectDataRender($,subject){
+    	var retData;
+    	var param = "subjectName="+subject;
+    	$.ajax({
+    		url:"../api/StuCount/subjDefaultCount"
+    		,data: param
+    		,async: false
+    		,success: function(data){
+    			retData = fetchXYData(data.data);
+    			subjectRender(data.data,subject,$);
+    		}
+    	})
+    	return retData;
+    }
+  	//提取从ajax返回的x和y轴数据，并返回
+    function fetchXYData(data){
+    	var retData = {};
+    	var Xdata = [],Ydata = [];
+    	data.forEach(function(item,index){
+    		Xdata.push(item.name.substr(0,5));
+    		Ydata.push(item.value);
+		})
+		retData.XData = Xdata;  retData.YData = Ydata;
+		return retData;
+    }
+  	//用数据渲染指定科目的扇形图表
+    function subjectRender(data,subject,$){
+    	var chart = echarts.init(document.getElementById(subject));
+    	pipChartRander(chart,data,subject + "成绩统计");
+    }
+    //渲染所有学科的总条状图表
+    function randerTatalBarChart(python,java,linux,sql){
+    	var chart = echarts.init(document.getElementById("scoreBarAll"));
+    	chart.setOption({
+			title:{
+				text: "各科分数段统计"
+			},
+		    xAxis: {
+		        type: 'category',
+		        data: python.XData
+		    },
+		    yAxis: {
+		        type: 'value'
+		    },
+		    tooltip: {},
+		    legend: {},
+		    series: [{
+		        data: python.YData,
+		        type: 'bar',
+		        name: 'python'
+		    }
+		    ,{
+		        data: java.YData,
+		        type: 'bar',
+		        name: 'java'
+		    }
+		    ,{
+		        data: linux.YData,
+		        type: 'bar',
+		        name: 'linux'
+		    }
+		    ,{
+		        data: sql.YData,
+		        type: 'bar',
+		        name: 'sql'
+		    }
+		    ]
+        });
+    }
+  	//渲染总分扇形图
+	function rederSumPipChart($){
+		$.ajax({
+    		url:"../api/StuCount/sumScoreCount"
+    		,async: false
+    		,success: function(data){
+    			var chart = echarts.init(document.getElementById("sumScorePip"));
+    			pipChartRander(chart,data.data,"总分汇总");
+    		}
+    	})
+  	}
+    //渲染扇形图
+    function pipChartRander(chart,Data,titleText){
+    	chart.setOption({
+    		backgroundColor: '#2c343c',
+    		title:{
+				text: titleText
+				,textStyle: {
+					color: '#ffffff',
+					height: '20px'
+				}
+    			,left:'center'
+			},
+    	    visualMap: {
+    	        show: false,
+    	        min: 80,
+    	        max: 600,
+    	        inRange: {
+    	            colorLightness: [0, 1]
+    	        }
+    	    },
+    	    legend: {
+    	        orient: "vertical",
+    	        left: "right",
+    	        textStyle:{
+    	        	color: '#fff'
+    	        }
+    	    },
+    	    series : [
+    	        {
+    	            name: titleText,
+    	            type: 'pie',
+    	            radius: '55%',
+    	            data:Data,
+    	            roseType: 'angle',
+    	            label: {
+    	                normal: {
+    	                    textStyle: {
+    	                        color: 'rgba(255, 255, 255, 0.3)'
+    	                    }
+    	                }
+    	            },
+    	            labelLine: {
+    	                normal: {
+    	                    lineStyle: {
+    	                        color: 'rgba(255, 255, 255, 0.3)'
+    	                    }
+    	                }
+    	            },
+    	            itemStyle: {
+    	                normal: {
+    	                    shadowBlur: 200,
+    	                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+    	                }
+    	            }
+    	        }
+    	    ]
+        });
+    }
+    function postSingleScoreSearch($,table,data){
+    	table.render({
+    	   elem: '#singleSubj-SearchTable'
+    	   ,url:'../api/StuCount/querySubjOnZoneStu'
+    	   ,where: data
+    	   ,defaultToolbar: []			//设置头部右侧工具栏
+    	   ,title: '单科成绩检索结果'		//设置表格标题
+    	   ,cols: [[ 				//设置表头数据项
+    	        {field: 'id', title: '序号', width:80, sort: true, type:"numbers"}
+    	        ,{field: 'realName', title: '姓名', width:80}
+    	        ,{field: 'indentifyNo', title: '身份证号码', width:180}
+    	        ,{field: 'phone', title: '电话', width:150} 
+    	        ,{field: 'score', title: '分数', width:80}
+    	        ,{field: 'status', title: '状态', width:80,templet:function(d){
+    	        	if(d.score >= 60) return "<div>及格</div>";
+    	        	else return "<div>不及格</div>";
+    	        }}
+    	   ]]
+    	   ,page: true				//开启分页
+    	   ,limit: 10				//设置一页大小
+    	});
+    }
+    function postSumScoreSearch($,table,data){
+    	table.render({
+    	   elem: '#sumSubj-SearchTable'
+    	   ,url:'../api/StuCount/querySumScoreOnZoneStu'
+    	   ,where:data
+    	   ,defaultToolbar: []			//设置头部右侧工具栏
+    	   ,title: '总分检索结果'		//设置表格标题
+    	   ,cols: [[ 				//设置表头数据项
+    	        {field: 'id', title: '序号', width:80, sort: true, type:"numbers"}
+    	        ,{field: 'realName', title: '姓名', width:80}
+    	        ,{field: 'indentifyNo', title: '身份证号码', width:150}
+    	        ,{field: 'phone', title: '电话', width:150} 
+    	        ,{field: 'sum', title: '总分', width:80}
+    	        ,{field: 'status', title: '状态', width:80,templet:function(d){
+    	        	if(d.sum < 240) return "<div>不及格</div>";
+    	        	if(d.sum < 320) return "<div>及格</div>";
+    	        	if(d.sum < 360) return "<div>良好</div>";
+    	        		return "<div>优秀</div>";
+    	        }}
+    	   ]]
+    	   ,page: true				//开启分页
+    	   ,limit: 10				//设置一页大小
+    	});
+    }
+
+</script>
+</html>

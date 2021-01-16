@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./css/layui.css"  media="all">
+</head>
+<style>
+    *{
+        padding: 0;margin: 0;
+    }
+    body{
+        background-color: #f2f2f2;
+    }
+    .box{
+        margin: 0 auto;
+        width: 400px;
+        height: 350px;
+        position: absolute;
+        top:50%;
+        left: 50%;
+        transform: translateY(-50%) translateX(-50%);
+        box-shadow: 5px 5px #efefef;
+        padding: 0 10px;
+        border: #cdcdcd 1px solid;
+    }
+    .box-title{
+        text-align: center;
+        font-size: 30px;
+        line-height: 50px;
+        font-weight: bolder;
+        margin-top: 20px;
+    }
+    .box-subtitle{
+        text-align: center;
+        line-height: 30px;
+    }
+    .box-form-lable{
+        width: 38px;
+        height: 38px;
+        position: absolute;
+        font-size: 22px;
+        line-height: 38px;
+        text-align: center;
+        color: #d2d2d2;
+    }
+    .box-form-input-item{
+        padding-left: 38px;
+    }
+    .box-form-btn-submit{
+        margin-top: 20px;
+    }
+</style>
+<body>
+    <div class="box">
+        <form class="layui-form">
+            <div class="box-title">Admin</div>
+            <div class="box-subtitle">Spring学习</div>
+            <div class="box-form">
+                <div class="layui-form-item">
+                    <label for="username" class="box-form-lable layui-icon layui-icon-username"></label>
+                    <input type="text" name="username" required lay-verify="username" placeholder="用户名" 
+                    autocomplete="off" class="layui-input box-form-input-item" > 
+                </div>
+                
+                <div class="layui-form-item">
+                    <label for="password" class="box-form-lable layui-icon layui-icon-password"></label>
+                    <input type="password" name="password" required lay-verify="password" placeholder="密码" 
+                        autocomplete="off" class="layui-input box-form-input-item" >
+                </div>
+
+                <div class="layui-form-item">
+                    <button lay-submit lay-filter="formDemo" type="button" class="layui-btn layui-btn-fluid box-form-btn-submit">登录</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</body>
+<script src="layui.js"></script>
+<script>
+    layui.use('form', function(){
+        var form = layui.form;
+        //验证表单
+        form.verify({
+            username: function(value, item){ //value：表单的值、item：表单的DOM对象
+                if(!new RegExp("^[a-zA-Z0-9_\u4e00-\u9fa5\\s·]+$").test(value)){
+                return '用户名不能有特殊字符';
+                }
+                if(/(^\_)|(\__)|(\_+$)/.test(value)){
+                return '用户名首尾不能出现下划线\'_\'';
+                }
+                if(/^\d+\d+\d$/.test(value)){
+                return '用户名不能全为数字';
+                }
+                //如果不想自动弹出默认提示框，可以直接返回 true，这时你可以通过其他任意方式提示（v2.5.7 新增）
+                if(value === 'xxx'){
+                alert('用户名不能为敏感词');
+                return true;
+                }
+            }
+            //我们既支持上述函数式的方式，也支持下述数组的形式
+            //数组的两个值分别代表：[正则匹配、匹配不符时的提示文字]
+            ,password: [
+                /^[\S]{6,12}$/
+                ,'密码必须6到12位，且不能出现空格'
+            ] 
+        });
+        //监听提交
+        form.on('submit(formDemo)', function(data){
+            layer.msg(JSON.stringify(data.field));
+            console.log(data.field);
+            return false;
+        }); 
+    });
+</script>
+</html>
