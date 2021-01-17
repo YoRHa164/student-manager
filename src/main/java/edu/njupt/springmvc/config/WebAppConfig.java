@@ -7,8 +7,11 @@ import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
+
+import edu.njupt.springmvc.web.interceptor.AccessInterceptor;
 
 @EnableWebMvc
 @Configuration
@@ -23,12 +26,21 @@ public class WebAppConfig implements WebMvcConfigurer {
 	public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
 		configurer.enable();
 	}
+	@Override
+	public void addResourceHandlers(ResourceHandlerRegistry registry) {
+		registry.addResourceHandler("/**").
+				 addResourceLocations("/WEB-INF/static/").
+				 setCachePeriod(30 * 1024 * 1024);
+	}
 	/**
 	 * 添加拦截器
 	 * 
 	 */
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
+		registry.addInterceptor(new AccessInterceptor()).
+				 addPathPatterns("/**").
+				 excludePathPatterns("/api/Admin/login", "**.js", "**.gif", "**.jpg", "**.png");
 	}
 	@Bean
 	public ViewResolver getViewResolver() {

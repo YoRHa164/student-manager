@@ -9,6 +9,11 @@ import edu.njupt.springmvc.settings.login.bean.LoginBean;
 import edu.njupt.springmvc.settings.login.dao.LoginDao;
 import edu.njupt.springmvc.util.DataBaseUtil;
 
+/**
+ * 完成登录操作的服务
+ * @author Administrator
+ *
+ */
 @Service
 public class LoginService {
 	@Resource(type = LoginDao.class)
@@ -21,7 +26,7 @@ public class LoginService {
 		this.loginDao = loginDao;
 	}
 	/**
-	 * 检查登录服务
+	 * 检查登录
 	 * @param account 	要被检查的账号
 	 * @param password	要被检查的密码（未被加密）
 	 * @return

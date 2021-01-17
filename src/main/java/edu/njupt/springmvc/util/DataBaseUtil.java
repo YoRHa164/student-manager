@@ -40,10 +40,7 @@ public class DataBaseUtil {
 	 * @return
 	 */
 	public static String currentTimeByUserType(String pattern) {
-		Date date = new Date(System.currentTimeMillis());
-		String current = new SimpleDateFormat(pattern).format(date);
-		logger.info("time stemp ===> " + current);
-		return current;
+		return new SimpleDateFormat(pattern).format(new Date(System.currentTimeMillis()));
 	}
 	/**
 	 * 获取md5信息摘要
@@ -68,11 +65,7 @@ public class DataBaseUtil {
 	}
 	
 	public static void main(String[] args) {
-		for(int i = 0; i < 5; i++) {
-			String str = "123";
-			String digest = getMD5Digest(str);
-			logger.info(str + " ===> " + digest);
-		}
+		logger.info(getMD5Digest("123456789"));
 	}
 	
 	

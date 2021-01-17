@@ -6,7 +6,11 @@ import org.springframework.stereotype.Repository;
 
 import edu.njupt.springmvc.settings.login.bean.LoginBean;
 
-//@Mapper
+/**
+ * 完成登录操作底层数据库访问
+ * @author Administrator
+ *
+ */
 @Repository
 @Scope("prototype")
 public interface LoginDao {
