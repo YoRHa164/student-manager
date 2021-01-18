@@ -33,7 +33,7 @@
       <li class="layui-nav-item">
         <a href="javascript:;">
           <img src="http://t.cn/RCzsdCq" class="layui-nav-img">
-         	<span id="adminName">贤心<span>
+         	<span id="adminName"><span>
         </a>
         <dl class="layui-nav-child">
           <dd><a href="javascript:;" id="adminChangePsd">安全设置</a></dd>
@@ -157,9 +157,8 @@
     	var currentAdmin;
     	$.get("../api/Admin/currentAdminInfo",function(data){
         	if(data.code == 0){
-        		currentAdmin = data.data[0];
         		//把当前管理员名字渲染到页面
-                $("#adminName").text(currentAdmin.realName);
+                $("#adminName").text(data.realName);
         	}
         })
     }

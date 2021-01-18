@@ -35,7 +35,6 @@ public class AccessInterceptor implements HandlerInterceptor{
 			 */
 			LoginBean login = (LoginBean) request.getSession().getAttribute("login");
 			if(login != null) {
-				logger.info(String.format("admin [ %s ] without check login", login.getAccount()));
 				return true;
 			}
 			response.sendRedirect(request.getContextPath() + "/pages/login.html");

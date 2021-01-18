@@ -18,7 +18,8 @@ import edu.njupt.springmvc.web.interceptor.AccessInterceptor;
 @ComponentScan(basePackages = { 
 		"edu.njupt.springmvc.settings.admin.controller",
 		"edu.njupt.springmvc.settings.login.controller",
-		"edu.njupt.springmvc.settings.student.controller"
+		"edu.njupt.springmvc.settings.student.controller",
+		"edu.njupt.springmvc.web.controller"
 		})
 public class WebAppConfig implements WebMvcConfigurer {
 	
@@ -39,8 +40,8 @@ public class WebAppConfig implements WebMvcConfigurer {
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(new AccessInterceptor()).
-				 addPathPatterns("/**").
-				 excludePathPatterns("/api/Admin/login", "**.js", "**.gif", "**.jpg", "**.png");
+				 addPathPatterns("/**/*.html", "/api/**", "/").
+				 excludePathPatterns("/api/Admin/login");
 	}
 	@Bean
 	public ViewResolver getViewResolver() {

@@ -21,7 +21,7 @@ import edu.njupt.springmvc.util.DataBaseUtil;
 import edu.njupt.springmvc.web.interceptor.AccessInterceptor;
 
 @Controller
-@RequestMapping(path = "/api/Admin")
+@RequestMapping("/api/Admin")
 public class LoginController {
 	private static final Logger logger = Logger.getLogger(LoginController.class);
 	
@@ -44,7 +44,7 @@ public class LoginController {
 			HttpServletRequest req,
 			@RequestParam("loginName") String acc, @RequestParam("password") String pwd) {
 		
-		logger.info(String.format("[account=%s, password=%s] login", acc, pwd));
+		logger.info(String.format("[account=%s, password=%s, ip=%s] try login", acc, pwd, req.getRemoteAddr()));
 		
 		Map<String, Object> result = new HashMap<>(10);
 		try {
@@ -59,5 +59,19 @@ public class LoginController {
 		}
 		
 		return result;
+	}
+	/**
+	 * 添加退出操作，暂时只在{@link HttpSession session} 域移除相关对象，实际可能检验更多东西
+	 * @param session
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(path = "/logout", method = RequestMethod.POST)
+	public Map<String, Object> logout(HttpSession session){
+		LoginBean login = (LoginBean) session.getAttribute("login");
+		session.removeAttribute("login");
+		
+		logger.debug(String.format("admin [ %s ] logout", login.getAccount()));
+		return Map.of("msg", "退出成功");
 	}
 }

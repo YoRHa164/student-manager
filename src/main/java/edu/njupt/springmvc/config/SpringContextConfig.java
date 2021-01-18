@@ -31,7 +31,9 @@ import com.alibaba.druid.pool.DruidDataSource;
 @Import(value = {SpringTransactionConfig.class})
 @ComponentScan(
 		basePackages = {
-				"edu.njupt.springmvc.settings"}, 
+				"edu.njupt.springmvc.settings.admin",
+				"edu.njupt.springmvc.settings.login",
+				"edu.njupt.springmvc.settings.student"}, 
 		excludeFilters = {@Filter(type = FilterType.ANNOTATION, classes = {Controller.class})})
 public class SpringContextConfig {
 	/**
