@@ -4,3 +4,5 @@
   jdbc.username=${username}
   jdbc.password=${password}
   jdbc.maxActive=${maxActive} //必要
+
+后端使用spring、springMVC、MyBatis框架编写。
