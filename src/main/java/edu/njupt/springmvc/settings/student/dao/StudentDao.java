@@ -24,4 +24,24 @@ public interface StudentDao {
 	 * @return
 	 */
 	int totalCountOfStudent();
+	/**
+	 * 通过realName字段查找学生
+	 * @param realName
+	 * @return
+	 */
+	StudentBean queryStudentByRealName(@Param("realName") String realName);
+	
+	/**
+	 * 通过学生实体类进行添加
+	 * @param s
+	 * @return 返回执行条数
+	 */
+	int addStudentByStudent(StudentBean s);
+	
+	/**
+	 * 通过id进行删除操作
+	 * @param id
+	 * @return
+	 */
+	int deleteStudentById(String id);
 }

@@ -3,4 +3,4 @@
   jdbc.url=${url}
   jdbc.username=${username}
   jdbc.password=${password}
-  jdbc.maxActive=${maxActive}
+  jdbc.maxActive=${maxActive} //必要

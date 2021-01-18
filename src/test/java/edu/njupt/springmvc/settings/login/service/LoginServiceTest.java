@@ -5,8 +5,8 @@ import org.junit.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import edu.njupt.springmvc.config.SpringContextConfig;
-import edu.njupt.springmvc.exception.LoginException;
 import edu.njupt.springmvc.settings.login.bean.LoginBean;
+import edu.njupt.springmvc.settings.login.exception.LoginException;
 
 public class LoginServiceTest {
 	private static final Logger logger = Logger.getLogger(LoginServiceTest.class);

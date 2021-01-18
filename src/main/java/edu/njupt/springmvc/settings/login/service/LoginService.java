@@ -4,9 +4,9 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
-import edu.njupt.springmvc.exception.LoginException;
 import edu.njupt.springmvc.settings.login.bean.LoginBean;
 import edu.njupt.springmvc.settings.login.dao.LoginDao;
+import edu.njupt.springmvc.settings.login.exception.LoginException;
 import edu.njupt.springmvc.util.DataBaseUtil;
 
 /**

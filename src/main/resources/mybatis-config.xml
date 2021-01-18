@@ -9,7 +9,9 @@
 	</settings>
 	
 	<typeAliases>
-		<package name="edu.njupt.springmvc.settings" />
+		<package name="edu.njupt.springmvc.settings.admin.bean" />
+		<package name="edu.njupt.springmvc.settings.login.bean" />
+		<package name="edu.njupt.springmvc.settings.student.bean" />
 	</typeAliases>
 	
 	<!-- 环境配置：事务管理器和数据源配置 -->

@@ -1,4 +1,4 @@
-package edu.njupt.springmvc.exception;
+package edu.njupt.springmvc.settings.login.exception;
 
 /**
  * 有关登录的异常

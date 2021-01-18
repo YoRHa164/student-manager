@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import edu.njupt.springmvc.exception.LoginException;
 import edu.njupt.springmvc.settings.login.bean.LoginBean;
+import edu.njupt.springmvc.settings.login.exception.LoginException;
 import edu.njupt.springmvc.settings.login.service.LoginService;
 import edu.njupt.springmvc.util.DataBaseUtil;
 import edu.njupt.springmvc.web.interceptor.AccessInterceptor;

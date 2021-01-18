@@ -27,7 +27,7 @@ public class AccessInterceptor implements HandlerInterceptor{
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
 		String servletPath = request.getServletPath();
-		logger.info(String.format("access intercepor invoking... path ===> %s", servletPath));
+		logger.info(String.format("access intercepor invoke : request path ===> %s", servletPath));
 		
 		if(!"/pages/login.html".equals(servletPath)) {
 			/*

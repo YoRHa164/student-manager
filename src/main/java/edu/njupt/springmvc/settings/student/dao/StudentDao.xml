@@ -19,10 +19,56 @@
 		limit
 			#{start}, #{limit}
 	</select>
+	<!-- 
+		查询学生数量
+	 -->
 	<select id="totalCountOfStudent" resultType="int">
 		select 
 			count(id)
 		from 
 			stureginfo
 	</select>
+	
+	<select id="queryStudentByRealName" resultType="StudentBean">
+		select 
+			id,
+			realName,
+			gender,
+			age,
+			indentifyNo,
+			city,
+			address,
+			phone,
+			regTime 
+		from 
+			stureginfo
+		where
+			realName=#{realName}
+	</select>
+	
+	<insert id="addStudentByStudent" parameterType="StudentBean">
+		insert into 
+			stureginfo(
+				realName, 
+				gender, 
+				age, 
+				indentifyNo, 
+				city, 
+				address, 
+				phone, 
+				regTime)
+		value(
+			#{realName}, 
+			#{gender}, 
+			#{age}, 
+			#{indentifyNo}, 
+			#{city}, 
+			#{address}, 
+			#{phone}, 
+			#{regTime})
+			
+	</insert>
+	<delete id="deleteStudentById">
+		delete from stureginfo where id=#{id}
+	</delete>
 </mapper>
