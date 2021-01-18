@@ -44,4 +44,29 @@ public interface StudentDao {
 	 * @return
 	 */
 	int deleteStudentById(String id);
+	/**
+	 * 通过bean方式进行更新
+	 * @param s
+	 * @return
+	 */
+	int updateStudentByStudentBean(StudentBean s);
+	
+	/**
+	 * 通过关键字 {@link String keyWord} 进行模糊查询
+	 * @param keyWord
+	 * @param startIndex
+	 * @param limit
+	 * @return
+	 */
+	List<StudentBean> queryStudentByKeyWord(
+			@Param("keyWord") String keyWord, 
+			@Param("startIndex") Integer startIndex, 
+			@Param("limit") Integer limit);
+	/**
+	 * 与 queryStudentByKeyWord() 搭配使用。
+	 * 该方法获取 queryStudentByKeyWord 下模糊查询具体数量,用于分页
+	 * @param keyWord
+	 * @return
+	 */
+	int totalCountOfQueryStudentByKeyWord(@Param("keyWord") String keyWord);
 }

@@ -19,8 +19,8 @@ public class StudentServiceTest {
 	public void testQueryStudentByLimitOrderById() {
 		
 		StudentService bean = ctx.getBean(StudentService.class);
-		bean.queryStudentByLimitOrderById(1, 5).forEach(s -> {
-			logger.info(String.format("id ==> %s", s.getId()));
+		bean.queryStudentByLimitOrderById(1, 5).forEach((k, v) -> {
+			System.out.println(k + " = " + v);
 		});
 		
 	}
@@ -61,6 +61,26 @@ public class StudentServiceTest {
 			logger.info(String.format("id [ %s ] ==> 删除成功", "10099"));
 		} catch (StudentException e) {
 			logger.warn(e.getMessage());
+		}
+	}
+	@Test
+	@Ignore
+	public void testUpdateStudentByStudentBean() {
+		StudentBean s = new StudentBean();
+		s.setAddress("123");
+		s.setAge(15);
+		s.setCity("123");
+		s.setGender("男");
+		s.setId("10078");
+		s.setIndentifyNo("456456456456456");
+		s.setPhone("78978978978");
+		s.setRealName("张三146");
+		try {
+			studentService.updateStudentByStudentBean(s);
+			
+			logger.info(String.format("update success ===> %s ", s.getId()));
+		} catch (StudentException e) {
+			logger.info(String.format("update faild ===> %s", e.getMessage()));
 		}
 	}
 }

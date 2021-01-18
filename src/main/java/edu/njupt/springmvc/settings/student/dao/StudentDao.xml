@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="edu.njupt.springmvc.settings.student.dao.StudentDao">
-	<select id="queryByLimitOrderById" resultType="StudentBean">
-		select
+	<sql id="stureginfoCompleteFields">
 			id,
 			realName,
 			gender,
@@ -12,6 +11,10 @@
 			address,
 			phone,
 			regTime
+	</sql>
+	<select id="queryByLimitOrderById" resultType="StudentBean">
+		select
+			<include refid="stureginfoCompleteFields"></include>
 		from 
 			stureginfo
 		order by 
@@ -31,15 +34,7 @@
 	
 	<select id="queryStudentByRealName" resultType="StudentBean">
 		select 
-			id,
-			realName,
-			gender,
-			age,
-			indentifyNo,
-			city,
-			address,
-			phone,
-			regTime 
+			<include refid="stureginfoCompleteFields"></include>
 		from 
 			stureginfo
 		where
@@ -71,4 +66,53 @@
 	<delete id="deleteStudentById">
 		delete from stureginfo where id=#{id}
 	</delete>
+	
+	<update id="updateStudentByStudentBean" parameterType="StudentBean">
+		update 
+			stureginfo
+		set
+			realName=#{realName},
+			gender=#{gender},
+			age=#{age},
+			indentifyNo=#{indentifyNo},
+			city=#{city},
+			address=#{address},
+			phone=#{phone}
+		where
+			id=#{id}
+	</update>
+	<select id="queryStudentByKeyWord" resultType="StudentBean">
+		select
+			<include refid="stureginfoCompleteFields"></include>
+		from
+			stureginfo
+		where
+			id			like '%' #{keyWord} '%' or
+			realName	like '%' #{keyWord} '%' or
+			gender		like '%' #{keyWord} '%' or
+			age			like '%' #{keyWord} '%' or
+			indentifyNo	like '%' #{keyWord} '%' or
+			city		like '%' #{keyWord} '%' or
+			address		like '%' #{keyWord} '%' or
+			phone		like '%' #{keyWord} '%'
+		order by
+			id
+		limit
+			#{startIndex}, #{limit}
+	</select>
+	<select id="totalCountOfQueryStudentByKeyWord" resultType="int">
+		select
+			count(id)
+		from
+			stureginfo
+		where
+			id			like '%' #{keyWord} '%' or
+			realName	like '%' #{keyWord} '%' or
+			gender		like '%' #{keyWord} '%' or
+			age			like '%' #{keyWord} '%' or
+			indentifyNo	like '%' #{keyWord} '%' or
+			city		like '%' #{keyWord} '%' or
+			address		like '%' #{keyWord} '%' or
+			phone		like '%' #{keyWord} '%'
+	</select>
 </mapper>

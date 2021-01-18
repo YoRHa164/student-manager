@@ -71,4 +71,34 @@ public class StudentDaoTest {
 		logger.info(String.format("id [ %s ] 删除 ==> %s", "10079", i == 1? "成功": "失败"));
 		
 	}
+	@Test
+	@Ignore
+	public void testUpdateByStudentBean() {
+		StudentBean s = new StudentBean();
+		s.setAddress("123");
+		s.setAge(15);
+		s.setCity("123");
+		s.setGender("男");
+		s.setId("10078");
+		s.setIndentifyNo("456456456456456");
+		s.setPhone("78978978978");
+		s.setRealName("张三147");
+		studentDao.updateStudentByStudentBean(s);
+	}
+	@Test
+	@Ignore
+	public void testFuzzyQuery() {
+		List<StudentBean> keyWord = studentDao.queryStudentByKeyWord("1199", 0, 10);
+		keyWord.forEach(s -> {
+			System.out.println(s + " === " + s.getAddress());
+			
+		});
+	}
+	@Test
+	@Ignore
+	public void testCountOfFuzzyQuery() {
+		String keyWord = "1199";
+		int countOf = studentDao.totalCountOfQueryStudentByKeyWord(keyWord);
+		logger.info(String.format("count of fuzzy keyWord = [ %s ] is %d", keyWord, countOf));
+	}
 }

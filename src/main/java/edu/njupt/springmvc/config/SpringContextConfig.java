@@ -18,6 +18,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.alibaba.druid.pool.DruidDataSource;
 
@@ -28,6 +29,7 @@ import com.alibaba.druid.pool.DruidDataSource;
  */
 @Configuration
 @EnableAspectJAutoProxy
+@EnableTransactionManagement
 @Import(value = {SpringTransactionConfig.class})
 @ComponentScan(
 		basePackages = {

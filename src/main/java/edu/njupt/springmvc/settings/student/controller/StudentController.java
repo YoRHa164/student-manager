@@ -1,7 +1,6 @@
 package edu.njupt.springmvc.settings.student.controller;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -43,19 +42,15 @@ public class StudentController {
 	@RequestMapping(path = "/query", method = RequestMethod.GET)
 	public Map<String, Object> queryStudentInfo(Integer page, Integer limit){
 		logger.info(String.format("query student info page=%s, limit=%s", page, limit));
-		Map<String, Object> res = new HashMap<>(10);
-		List<StudentBean> result = null;
+		Map<String, Object> res = null;
+		
 		try {
-			result = studentService.queryStudentByLimitOrderById(page, limit);
-			
+			res = studentService.queryStudentByLimitOrderById(page, limit);
 			res.put("code", 0);
 			res.put("msg", "success");
-			res.put("data", result);
-			res.put("count", studentService.totalCountOfStudent());
 		} catch (Exception e) {
 			res.put("code", 1);
-			res.put("msg", "error");
-			res.put("data", result);
+			res.put("msg", "failed: " + e.getMessage());
 		}
 		
 		return res;
@@ -114,6 +109,51 @@ public class StudentController {
 			
 			result.put("code", 1);
 			result.put("msg", e.getMessage());
+		}
+		
+		return result;
+	}
+	/**
+	 * 通过实体类更新数据库
+	 * 	请求无法更改id和regTime
+	 * @param s
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(path = "/update", method = RequestMethod.POST)
+	public Map<String, Object> updateStudentByStudentBean(StudentBean s){
+		HashMap<String, Object> result = new HashMap<>(10);
+		try {
+			studentService.updateStudentByStudentBean(s);
+			
+			result.put("code", 0);
+			result.put("msg", "修改成功");
+		} catch (StudentException e) {
+			result.put("code", 1);
+			result.put("msg", e.getMessage());
+		}
+		
+		return result;
+	}
+	/**
+	 * 模糊查询  该方法查询 StudentBean全字段匹配
+	 * @param keyWord
+	 * @param page
+	 * @param limit
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(path = "/queryByKeyWord", method = RequestMethod.GET)
+	public Map<String, Object> fuzzyQueryByKeyWord(String keyWord, Integer page, Integer limit){
+		Map<String, Object> result = null;
+		try {
+			result = studentService.fuzzyQueryByKeyWord(keyWord, page, limit);
+			
+			result.put("code", 0);
+			result.put("msg", "查询成功");
+		} catch (Exception e) {
+			result.put("code", 1);
+			result.put("msg", "查询失败");
 		}
 		
 		return result;
