@@ -101,4 +101,18 @@ public class StudentDaoTest {
 		int countOf = studentDao.totalCountOfQueryStudentByKeyWord(keyWord);
 		logger.info(String.format("count of fuzzy keyWord = [ %s ] is %d", keyWord, countOf));
 	}
+	@Test
+	@Ignore
+	public void testQueryStudentByInterval() {
+		List<StudentBean> interval = studentDao.queryStudentByInterval("2020-12-24", "2021-01-04", 0, 30);
+		interval.forEach(s -> {
+			System.out.println(s.getRegTime());
+		});
+	}
+	@Test
+	@Ignore
+	public void testTotalCountOfQueryStudentByInteval() {
+		int totalCount = studentDao.totalCountOfQueryStudentByInteval("2020-12-24", "2021-01-20");
+		logger.info("total count of query is ==> " + totalCount);
+	}
 }

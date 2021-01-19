@@ -115,4 +115,25 @@
 			address		like '%' #{keyWord} '%' or
 			phone		like '%' #{keyWord} '%'
 	</select>
+	
+	<select id="queryStudentByInterval" resultType="StudentBean">
+		select
+			<include refid="stureginfoCompleteFields"></include>
+		from 
+			stureginfo
+		where
+			regTime >= #{start} and regTime <![CDATA[<]]> #{end}
+		order by
+			regTime asc
+		limit
+			#{startIndex}, #{limit}
+	</select>
+	<select id="totalCountOfQueryStudentByInteval" resultType="int">
+		select
+			count(id)
+		from 
+			stureginfo
+		where
+			regTime >= #{start} and regTime <![CDATA[<]]> #{end}
+	</select>
 </mapper>

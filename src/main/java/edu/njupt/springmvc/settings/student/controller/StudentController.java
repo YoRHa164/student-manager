@@ -42,18 +42,21 @@ public class StudentController {
 	@RequestMapping(path = "/query", method = RequestMethod.GET)
 	public Map<String, Object> queryStudentInfo(Integer page, Integer limit){
 		logger.info(String.format("query student info page=%s, limit=%s", page, limit));
-		Map<String, Object> res = null;
 		
+		Map<String, Object> res = null;
+		Map<String, Object> result = new HashMap<>(10);
 		try {
 			res = studentService.queryStudentByLimitOrderById(page, limit);
-			res.put("code", 0);
-			res.put("msg", "success");
+			
+			result.put("data", res.get("data"));
+			result.put("count", res.get("count"));
+			result.put("code", 0);
 		} catch (Exception e) {
-			res.put("code", 1);
-			res.put("msg", "failed: " + e.getMessage());
+			result.put("code", 1);
+			result.put("msg", "failed: " + e.getMessage());
 		}
 		
-		return res;
+		return result;
 	}
 	/**
 	 * 通过realName方式查找用户 若存在用户，返回{"code":0} 否则返回{"code":1}
@@ -145,15 +148,35 @@ public class StudentController {
 	@ResponseBody
 	@RequestMapping(path = "/queryByKeyWord", method = RequestMethod.GET)
 	public Map<String, Object> fuzzyQueryByKeyWord(String keyWord, Integer page, Integer limit){
-		Map<String, Object> result = null;
+		Map<String, Object> res = null;
+		Map<String, Object> result = new HashMap<>(10);
 		try {
-			result = studentService.fuzzyQueryByKeyWord(keyWord, page, limit);
+			res = studentService.fuzzyQueryByKeyWord(keyWord, page, limit);
 			
+			result.put("data", res.get("data"));
+			result.put("count", res.get("count"));
 			result.put("code", 0);
-			result.put("msg", "查询成功");
 		} catch (Exception e) {
 			result.put("code", 1);
-			result.put("msg", "查询失败");
+			result.put("msg", e.getMessage());
+		}
+		
+		return result;
+	}
+	@ResponseBody
+	@RequestMapping(path = "/queryByRegTime", method = RequestMethod.GET)
+	public Map<String, Object> queryStudentByInterval(String startDate, String endDate, Integer page, Integer limit){
+		Map<String, Object> res = null;
+		Map<String, Object> result = new HashMap<>(10);
+		try {
+			res = studentService.queryStudentByInterval(startDate, endDate, page, limit);
+			
+			result.put("data", res.get("data"));
+			result.put("count", res.get("count"));
+			result.put("code", 0);
+		} catch (Exception e) {
+			result.put("code", 1);
+			result.put("msg", e.getMessage());
 		}
 		
 		return result;

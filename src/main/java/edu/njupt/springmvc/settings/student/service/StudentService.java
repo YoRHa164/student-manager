@@ -1,6 +1,7 @@
 package edu.njupt.springmvc.settings.student.service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -133,6 +134,20 @@ public class StudentService {
 		
 		result.put("count", studentDao.totalCountOfQueryStudentByKeyWord(keyWord));
 		result.put("data", studentDao.queryStudentByKeyWord(keyWord, (page - 1) * limit, limit));
+		return result;
+	}
+	@Transactional
+	public Map<String, Object> queryStudentByInterval(String start, String end, Integer page, Integer limit){
+		Map<String, Object> result = new HashMap<>(10);
+		page = page == null? 1:((page < 1)? 1: page);
+		limit = limit == null? 0: ((limit < 0)? 0: limit);
+		
+		List<StudentBean> queryResult = studentDao.queryStudentByInterval(start, end, (page - 1) * limit, limit);
+		int totalCount = studentDao.totalCountOfQueryStudentByInteval(start, end);
+		
+		result.put("data", queryResult);
+		result.put("count", totalCount);
+		
 		return result;
 	}
 }

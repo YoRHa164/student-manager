@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.njupt.springmvc.settings.admin.dao.AdminDao">
+	<sql id="sysadminCompleteFields">
+		id,
+		loginName,
+		password,
+		phone,
+		realName,
+		authorGroupId,
+		createTime
+	</sql>
+	<select id="checkAdminAccountOldPasswordCurrect" resultType="LoginBean">
+		select 
+			<include refid="sysadminCompleteFields"></include>
+		from 
+			sysadmin
+		where
+			loginName=#{loginName} and password=#{password}
+	</select>
+	
+	<update id="updateAdminPassword">
+		update
+			sysadmin
+		set
+			password=#{password}
+		where
+			loginName=#{loginName}
+	</update>
+</mapper>

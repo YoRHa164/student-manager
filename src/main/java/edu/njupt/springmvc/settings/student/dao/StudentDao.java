@@ -69,4 +69,27 @@ public interface StudentDao {
 	 * @return
 	 */
 	int totalCountOfQueryStudentByKeyWord(@Param("keyWord") String keyWord);
+	
+	/**
+	 * 按照时间间隔方式查询 &nbsp;&nbsp; <b>查询区间为[startTime, endTime)</b>, 与jdk默认方式一致。 <br>
+	 * 注意，该方法查询结果<b>有序</b> 结果按照时间顺序从小到大自然排列。
+	 * @param startTime 起始时间
+	 * @param endTime	结束时间
+	 * @param startIndex	开始的索引
+	 * @param limit			每页数量
+	 * @return
+	 */
+	List<StudentBean> queryStudentByInterval(
+			@Param("start") String startTime, 
+			@Param("end") String endTime, 
+			@Param("startIndex") Integer startIndex, 
+			@Param("limit") Integer limit);
+	
+	/**
+	 * 与 <b>queryStudentByInterval()</b>方法搭配使用。该方法返回上述方法结果不使用分页查询的所有结果数量，用于前端分页查询
+	 * @param start
+	 * @param end
+	 * @return
+	 */
+	int totalCountOfQueryStudentByInteval(@Param("start") String start, @Param("end") String end);
 }
