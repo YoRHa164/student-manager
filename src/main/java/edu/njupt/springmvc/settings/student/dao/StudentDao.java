@@ -92,4 +92,12 @@ public interface StudentDao {
 	 * @return
 	 */
 	int totalCountOfQueryStudentByInteval(@Param("start") String start, @Param("end") String end);
+	
+	/**
+	 * 通过stuId字段，查找学生 <br>
+	 * 若存在该学生，则返回{@link StudentBean} 若不存在该学生，则返回null
+	 * @param id
+	 * @return
+	 */
+	StudentBean queryStudentById(@Param("id") String id);
 }

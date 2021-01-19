@@ -136,4 +136,13 @@
 		where
 			regTime >= #{start} and regTime <![CDATA[<]]> #{end}
 	</select>
+	
+	<select id="queryStudentById" resultType="StudentBean">
+		select 
+			<include refid="stureginfoCompleteFields"></include>
+		from 
+			stureginfo
+		where
+			id=#{id}
+	</select>
 </mapper>

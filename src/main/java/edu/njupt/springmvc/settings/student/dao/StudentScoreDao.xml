@@ -10,6 +10,17 @@
 		<result column="java" property="java"/>
 		<result column="total" property="total"/>
 	</resultMap>
+	
+	<parameterMap type="StudentScoreBean" id="paramStudentScoreBean" >
+		<parameter property="id" resultMap="studentScoreBean"/>
+		<parameter property="name" resultMap="studentScoreBean"/>
+		<parameter property="python" resultMap="studentScoreBean"/>
+		<parameter property="linux" resultMap="studentScoreBean"/>
+		<parameter property="sql" resultMap="studentScoreBean"/>
+		<parameter property="java" resultMap="studentScoreBean"/>
+	</parameterMap>
+	
+	
 	<sql id="studentScoreBeanCompleteFields">
 		id,
 		realName,
@@ -75,4 +86,79 @@
 		where
 			realName like '%' #{realName} '%'
 	</select>
+	<select id="queryStudentScoreExistsById" resultType="int">
+		select 
+			count(stuId)
+		from 
+			stuscore
+		where
+			stuId=#{id}
+	</select>
+	
+	<update id="updateStudentScoreByStudentScoreBean" parameterMap="paramStudentScoreBean">
+		<!-- update
+			stuscore
+		set
+			python=#{python},
+			linux=#{linux},
+			`sql`=#{sql},
+			java=#{java}
+		where
+			stuId=#{id} -->
+		<!-- 
+			使用动态sql进行拼接字符串,达到检验空值目的
+		 -->
+		update
+			stuscore
+		<set>
+			<if test="python != null">
+				python=#{python},
+			</if>
+			<if test="linux != null">
+				linux=#{linux},
+			</if>
+			<if test="sql != null">
+				`sql`=#{sql},
+			</if>
+			<if test="java != null">
+				java=#{java}
+			</if>
+		</set>
+		where
+			stuId=#{id}
+	</update>
+	
+	<insert id="insertStudentScoreByStudentScoreBean" parameterMap="paramStudentScoreBean">
+		insert into stuscore
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+				stuId,
+			<if test="python != null">
+				python,
+			</if>
+			<if test="linux != null">
+				linux,
+			</if>
+			<if test="sql != null">
+				`sql`,
+			</if>
+			<if test="java != null">
+				java
+			</if>
+		</trim>
+		<trim prefix="values(" suffix=")" suffixOverrides=",">
+				#{id},
+			<if test="python != null">
+				#{python},
+			</if>
+			<if test="linux != null">
+				#{linux},
+			</if>
+			<if test="sql != null">
+				#{sql},
+			</if>
+			<if test="java != null">
+				#{java}
+			</if>
+		</trim>
+	</insert>
 </mapper>

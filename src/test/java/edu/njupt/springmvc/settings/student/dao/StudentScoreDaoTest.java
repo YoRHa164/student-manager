@@ -44,4 +44,37 @@ public class StudentScoreDaoTest {
 		int totalCount = ssd.totalCountOfQueryStudentScoreWithLimitByRealName("小");
 		logger.info(totalCount);
 	}
+	@Test
+	@Ignore
+	public void testQueryStudentScoreExistsById() {
+		int exists = ssd.queryStudentScoreExistsById(".....");
+		logger.info(exists);
+	}
+	@Test
+	@Ignore
+	public void testUpdateStudentScoreByStudentScoreBean() {
+		StudentScoreBean b = ctx.getBean(StudentScoreBean.class);
+		
+		b.setId("10007");
+		b.setPython(80);
+		b.setLinux(85);
+		b.setSql(85);
+		b.setJava(81);
+
+		int update = ssd.updateStudentScoreByStudentScoreBean(b);
+		logger.info(update);
+	}
+	@Test
+	@Ignore
+	public void testInsertStudentScoreByStudentScoreBean() {
+		StudentScoreBean b = ctx.getBean(StudentScoreBean.class);
+
+		b.setId("10062");
+		b.setPython(80);
+		b.setLinux(85);
+		b.setSql(86);
+		b.setJava(81);
+		
+		ssd.insertStudentScoreByStudentScoreBean(b);
+	}
 }

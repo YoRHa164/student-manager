@@ -115,4 +115,11 @@ public class StudentDaoTest {
 		int totalCount = studentDao.totalCountOfQueryStudentByInteval("2020-12-24", "2021-01-20");
 		logger.info("total count of query is ==> " + totalCount);
 	}
+	@Test
+	@Ignore
+	public void testQueryStudentById() {
+		StudentBean bean = studentDao.queryStudentById("10000");
+		logger.info(bean);
+		
+	}
 }

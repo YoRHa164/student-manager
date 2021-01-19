@@ -10,6 +10,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 import edu.njupt.springmvc.config.SpringContextConfig;
 import edu.njupt.springmvc.settings.student.bean.StudentScoreBean;
+import edu.njupt.springmvc.settings.student.exception.StudentException;
 
 public class StudentScoreServiceTest {
 	private static final Logger logger = Logger.getLogger(StudentScoreServiceTest.class);
@@ -27,5 +28,20 @@ public class StudentScoreServiceTest {
 		list.forEach(s -> {
 			System.out.println(s);
 		});
+	}
+	@Test
+	@Ignore
+	public void testUpdateStudentScoreByStudentScoreBean() {
+		StudentScoreBean bean = ctx.getBean(StudentScoreBean.class);
+		bean.setId("10060");
+		bean.setPython(35);
+		bean.setLinux(85);
+		bean.setSql(77);
+		try {
+			sss.updateStudentScoreByStudentScoreBean(bean);
+		} catch (StudentException e) {
+			logger.warn(e.getMessage());
+		}
+		
 	}
 }
