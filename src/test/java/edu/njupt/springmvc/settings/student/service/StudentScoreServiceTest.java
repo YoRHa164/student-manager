@@ -34,14 +34,24 @@ public class StudentScoreServiceTest {
 	public void testUpdateStudentScoreByStudentScoreBean() {
 		StudentScoreBean bean = ctx.getBean(StudentScoreBean.class);
 		bean.setId("10060");
-		bean.setPython(35);
+		bean.setPython(70);
 		bean.setLinux(85);
 		bean.setSql(77);
+		
 		try {
 			sss.updateStudentScoreByStudentScoreBean(bean);
 		} catch (StudentException e) {
 			logger.warn(e.getMessage());
 		}
 		
+	}
+	@Test
+	@Ignore
+	public void testDeleteStudentScoreById() {
+		try {
+			sss.deleteStudentScoreById("10069");
+		} catch (StudentException e) {
+			logger.warn(e.getMessage());
+		}
 	}
 }

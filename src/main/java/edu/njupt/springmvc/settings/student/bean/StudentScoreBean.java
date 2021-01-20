@@ -16,8 +16,7 @@ public class StudentScoreBean implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	private String id;	                //主键 id
-	@JsonProperty("realName")
-	private String name;                //真实姓名
+	private String realName;                //真实姓名
 	private Integer python;             //python成绩
 	private Integer linux;              //linux成绩
 	private Integer sql;                //sql成绩
@@ -37,16 +36,16 @@ public class StudentScoreBean implements Serializable {
 		this.id = id;
 	}
 	/**
-	 * @return name
+	 * @return realName
 	 */
-	public String getName() {
-		return name;
+	public String getRealName() {
+		return realName;
 	}
 	/**
-	 * @param name 要设置的 name
+	 * @param realName 要设置的 realName
 	 */
-	public void setName(String name) {
-		this.name = name;
+	public void setRealName(String realName) {
+		this.realName = realName;
 	}
 	/**
 	 * @return python
@@ -115,8 +114,8 @@ public class StudentScoreBean implements Serializable {
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((java == null) ? 0 : java.hashCode());
 		result = prime * result + ((linux == null) ? 0 : linux.hashCode());
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + ((python == null) ? 0 : python.hashCode());
+		result = prime * result + ((realName == null) ? 0 : realName.hashCode());
 		result = prime * result + ((sql == null) ? 0 : sql.hashCode());
 		result = prime * result + ((total == null) ? 0 : total.hashCode());
 		return result;
@@ -145,15 +144,15 @@ public class StudentScoreBean implements Serializable {
 				return false;
 		} else if (!linux.equals(other.linux))
 			return false;
-		if (name == null) {
-			if (other.name != null)
-				return false;
-		} else if (!name.equals(other.name))
-			return false;
 		if (python == null) {
 			if (other.python != null)
 				return false;
 		} else if (!python.equals(other.python))
+			return false;
+		if (realName == null) {
+			if (other.realName != null)
+				return false;
+		} else if (!realName.equals(other.realName))
 			return false;
 		if (sql == null) {
 			if (other.sql != null)
@@ -172,8 +171,8 @@ public class StudentScoreBean implements Serializable {
 		StringBuilder builder = new StringBuilder();
 		builder.append("StudentScoreBean [id=");
 		builder.append(id);
-		builder.append(", name=");
-		builder.append(name);
+		builder.append(", realName=");
+		builder.append(realName);
 		builder.append(", python=");
 		builder.append(python);
 		builder.append(", linux=");

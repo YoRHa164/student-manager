@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.njupt.springmvc.settings.student.dao.StudentCountDao">
+	<select id="queryRegisiteTimeByInterval" resultType="map">
+		select 
+			DATE_FORMAT(regTime,'%Y-%m-%d') regDate,
+			count(id) regNum
+		from 
+			stureginfo 
+		where 
+			regTime >= #{startTime} and 
+			regTime  <![CDATA[<]]>  #{endTime} 
+		group by 
+			regDate
+		order by
+			regDate asc
+	</select>
+	 <select id="queryDefaultScoreIntervalBySubject" resultType="map">
+	 	select
+			count(case when `${subject}` >=90 and `${subject}` &lt;=100 then stuId end)  '>=90',
+			count(case when `${subject}` >=80 and `${subject}` &lt;  90 then stuId end)  '>=80',
+		    count(case when `${subject}` >=70 and `${subject}` &lt;  80 then stuId end)  '>=70',
+		    count(case when `${subject}` >=60 and `${subject}` &lt;  70 then stuId end)  '>=60',
+		    count(case when `${subject}` &lt; 60 then stuId end) '&lt;60'
+		from 
+			stuscore
+	 </select>
+</mapper>

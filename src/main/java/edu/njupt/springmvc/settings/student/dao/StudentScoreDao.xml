@@ -3,7 +3,7 @@
 <mapper namespace="edu.njupt.springmvc.settings.student.dao.StudentScoreDao">
 	<resultMap type="StudentScoreBean" id="studentScoreBean">
 		<id column="id" property="id"/>
-		<result column="realName" property="name"/>
+		<result column="realName" property="realName"/>
 		<result column="python" property="python"/>
 		<result column="linux" property="linux"/>
 		<result column="sql" property="sql"/>
@@ -13,7 +13,7 @@
 	
 	<parameterMap type="StudentScoreBean" id="paramStudentScoreBean" >
 		<parameter property="id" resultMap="studentScoreBean"/>
-		<parameter property="name" resultMap="studentScoreBean"/>
+		<parameter property="realName" resultMap="studentScoreBean"/>
 		<parameter property="python" resultMap="studentScoreBean"/>
 		<parameter property="linux" resultMap="studentScoreBean"/>
 		<parameter property="sql" resultMap="studentScoreBean"/>
@@ -35,9 +35,9 @@
 		select
 			<include refid="studentScoreBeanCompleteFields"></include>
 		from
-			stureginfo reginfo
-		left join
 			stuscore score
+		left join
+			stureginfo reginfo
 		on
 			score.stuId=reginfo.id
 		order by
@@ -49,9 +49,9 @@
 		select
 			count(id)
 		from 
-			stureginfo reginfo
-		left join
 			stuscore score
+		left join
+			stureginfo reginfo
 		on
 			score.stuId=reginfo.id
 	</select>
@@ -161,4 +161,28 @@
 			</if>
 		</trim>
 	</insert>
+	
+	<select id="queryStudentInfoWithoutScore" resultType="map">
+		select 
+			id, 
+			realName 
+		from 
+			stureginfo info 
+		left join 
+			stuscore score 
+		on 
+			info.id=score.stuId 
+		where
+			score.java is null and 
+			score.`sql` is null and 
+			score.python is null and 
+			score.linux is null;
+	</select>
+	
+	<delete id="deleteStudentScoreById">
+		delete from 
+			stuscore
+		where
+			stuId=#{id}
+	</delete>
 </mapper>

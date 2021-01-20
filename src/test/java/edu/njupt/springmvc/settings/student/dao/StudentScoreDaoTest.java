@@ -1,6 +1,7 @@
 package edu.njupt.springmvc.settings.student.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.junit.Ignore;
@@ -76,5 +77,18 @@ public class StudentScoreDaoTest {
 		b.setJava(81);
 		
 		ssd.insertStudentScoreByStudentScoreBean(b);
+	}
+	@Test
+	@Ignore
+	public void testQueryStudentInfoWithoutScore() {
+		List<Map<String, String>> list = ssd.queryStudentInfoWithoutScore();
+		list.forEach(info -> {
+			logger.info(info);
+		});
+	}
+	@Test
+	@Ignore
+	public void testDeleteStudentScoreById() {
+		ssd.deleteStudentScoreById("10069");
 	}
 }

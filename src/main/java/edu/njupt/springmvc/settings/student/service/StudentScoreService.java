@@ -82,20 +82,58 @@ public class StudentScoreService {
 		StudentBean bean = studentDao.queryStudentById(b.getId());
 		//业务层面检查外键约束。即检查学生是否注册过
 		if(bean == null) {
-			throw new StudentException(String.format("id:%s, name: %s 未注册，请先对该学生注册", b.getId(), b.getName()));
+			throw new StudentException(String.format("id:%s, name: %s 未注册，请先对该学生注册", b.getId(), b.getRealName()));
 		}
-		int exists = studentScoreDao.queryStudentScoreExistsById(bean.getId());
-		int result = -1;
+		int result = studentScoreDao.updateStudentScoreByStudentScoreBean(b);
 		
-		if(exists == 1) {
-			//学生曾经添加过分数信息，进行更新操作
-			result = studentScoreDao.updateStudentScoreByStudentScoreBean(b);
-		}else {
-			//学生未曾添加过分数信息，进行添加操作
-			result = studentScoreDao.insertStudentScoreByStudentScoreBean(b);
+		if(result == 0) {
+			throw new StudentException("修改失败，请先对学生进行添加");
+		}else if(result != 1) {
+			throw new StudentException("修改失败，请检查输入是否正确");
 		}
-		if(result != 1) {
-			throw new StudentException("学生修改操作异常，请重新操作");
+	}
+	/**
+	 * 通过 <b>map</b> 方式查找未被添加进学生成绩表 <b>stuscore</b> 的学生
+	 * @return
+	 */
+	public List<Map<String, String>> queryStudentInfoWithoutScore(){
+		return studentScoreDao.queryStudentInfoWithoutScore();
+	}
+	/**
+	 * 通过学生实体类进行插入学生成绩信息
+	 * @param b
+	 * @throws StudentException
+	 */
+	@Transactional(rollbackFor = {StudentException.class})
+	public void insertStudentScoreByStudentScoreBean(StudentScoreBean b) throws StudentException{
+		//检查学生是否注册过
+		StudentBean bean = studentDao.queryStudentByRealName(b.getRealName());
+		if(bean == null) {
+			throw new StudentException("该学生未注册，请先进行学生注册");
+		}
+		//前端API问题
+		b.setId(bean.getId());
+		int i = studentScoreDao.insertStudentScoreByStudentScoreBean(b);
+		if(i != 1) {
+			throw new StudentException("添加失败");
+		}
+	}
+	/**
+	 * 通过主键删除学生成绩信息
+	 * @param id
+	 * @throws StudentException
+	 */
+	@Transactional(rollbackFor = {StudentException.class})
+	public void deleteStudentScoreById(String id) throws StudentException {
+		//检查学生是否进行注册
+		StudentBean bean = studentDao.queryStudentById(id);
+		if(bean == null) {
+			throw new StudentException("删除失败，学生未注册");
+		}
+		//删除
+		int i = studentScoreDao.deleteStudentScoreById(id);
+		if(i != 1) {
+			throw new StudentException("删除失败");
 		}
 	}
 }

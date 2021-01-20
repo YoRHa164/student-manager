@@ -1,6 +1,7 @@
 package edu.njupt.springmvc.settings.student.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 import org.springframework.context.annotation.Scope;
@@ -67,4 +68,17 @@ public interface StudentScoreDao {
 	 * @return
 	 */
 	int insertStudentScoreByStudentScoreBean(StudentScoreBean b);
+	
+	/**
+	 * 查询未被添加进成绩表的已注册学生姓名 <b>realName</b> 和 学号 <b>id</b>
+	 * @return
+	 */
+	List<Map<String, String>> queryStudentInfoWithoutScore();
+	
+	/**
+	 * 通过主键id进行删除学生成绩表操作
+	 * @param id
+	 * @return
+	 */
+	int deleteStudentScoreById(@Param("id") String id);
 }
