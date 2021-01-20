@@ -29,5 +29,13 @@ public interface StudentCountDao {
 	 * @param subject
 	 * @return
 	 */
-	Map<String, Long> queryDefaultScoreIntervalBySubject(@Param("subject") String subject);
+	Map<String, Long> queryScoreInDefaultIntervalBySubject(@Param("subject") String subject);
+	
+	/**
+	 * 使用默认方式进行学生总成绩分布查询
+	 * 	默认分组方式：
+	 * 		[350, 400], [300, 350), [250, 300), [200, 250), [150, 200),[100, 150), [0, 100)  <br><br>
+	 * @return
+	 */
+	Map<String, Long> queryTotalScoreInDefaultInterval();
 }

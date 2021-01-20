@@ -1,8 +1,5 @@
 package edu.njupt.springmvc.settings.student.controller;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,7 +50,7 @@ public class StudentCountController {
 	}
 	/**
 	 * 按照学生成绩分布进行区间查询
-	 * 响应格式:
+	 * 响应格式:<br>
 	 * {
 	 * 		"code":0/1,
 	 * 		"data":[
@@ -61,7 +58,7 @@ public class StudentCountController {
 	 * 						"name":${interval name},
 	 * 						"value":${count of student}
 	 * 					},...
-	 * 				],
+	 * 				],<br>
 	 * 		"msg":${error message}
 	 * }
 	 * @param subject
@@ -73,21 +70,9 @@ public class StudentCountController {
 		Map<String, Object> result = new HashMap<>(10);
 		
 		try {
-			Map<String, Long> map = studentCountService.queryDefaultScoreIntervalBySubject(subject);
-			List<Map<String, Object>> temp = new ArrayList<>();
-			map.forEach((k, v) ->{
-				temp.add(Map.of("name", k, "value", v));
-			});
+			List<Map<String, Object>> res = studentCountService.queryScoreInDefaultIntervalBySubject(subject);
 			
-			//排序
-			Collections.sort(temp, new Comparator<Map<String, Object>>() {
-				@Override
-				public int compare(Map<String, Object> o1, Map<String, Object> o2) {
-					return ((String) o1.get("name")).compareTo((String) o2.get("name"));
-				}
-			});
-			
-			result.put("data", temp);
+			result.put("data", res);
 			result.put("code", 0);
 		} catch (Exception e) {
 			result.put("code", 1);
@@ -96,19 +81,52 @@ public class StudentCountController {
 		
 		return result;
 	}
+	/**
+	 * 按照学生成绩分布进行区间查询
+	 * 响应格式: <br>
+	 * {
+	 * 		"code":0/1, 
+	 * 		"data":[
+	 * 					{
+	 * 						"name":${interval name},
+	 * 						"value":${count of student}
+	 * 					},...
+	 * 				],<br>
+	 * 		"msg":${error message}
+	 * }
+	 * @return
+	 */
 	@ResponseBody
 	@RequestMapping(path = "/sumScoreCount", method = RequestMethod.GET)
+	public Map<String, Object> queryTotalScoreInDefaultInterval(){
+		Map<String, Object> result = new HashMap<>(6);
+		try {
+			List<Map<String, Object>> res = studentCountService.queryTotalScoreInDefaultInterval();
+			
+			result.put("data", res);
+			result.put("code", 1);
+		} catch (Exception e) {
+			result.put("code", 1);
+			result.put("msg", e.getMessage());
+			
+		}
+		return result;
+	}
+	
 	public Map<String, Object> test1(){
 		Map<String, Object> result = new HashMap<>(5);
 		
 		result.put("code", 0);
 		result.put("data", 
 				List.of(
-						Map.of("name", "测试1", "value", 20),
-						Map.of("name", "测试2", "value", 60),
-						Map.of("name", "测试3", "value", 60),
-						Map.of("name", "测试4", "value", 10),
-						Map.of("name", "测试5", "value", 10)
+						Map.of("name", ">=350", "value", 20, "msg", "测试1"),
+						Map.of("name", ">=300", "value", 60),
+						Map.of("name", ">=250", "value", 60),
+						Map.of("name", ">=200", "value", 30),
+						Map.of("name", ">=150", "value", 35),
+						Map.of("name", ">=100", "value", 33),
+						Map.of("name", ">= 50", "value", 36),
+						Map.of("name", ">= 0", "value", 20)
 						
 						));
 		

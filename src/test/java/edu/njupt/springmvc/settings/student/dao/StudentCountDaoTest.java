@@ -25,10 +25,19 @@ public class StudentCountDaoTest {
 		});
 	}
 	@Test
+	@Ignore
 	public void testQueryDefaultScoreIntervalBySubject() {
-		Map<String, Long> map = scd.queryDefaultScoreIntervalBySubject("java");
+		Map<String, Long> map = scd.queryScoreInDefaultIntervalBySubject("java");
 		map.forEach((k, v) -> {
 			logger.info(k + " == " + v);
+		});
+	}
+	@Test
+	@Ignore
+	public void testQueryTotalScoreInDefaultInterval() {
+		Map<String, Long> totalScore = scd.queryTotalScoreInDefaultInterval();
+		totalScore.forEach((k, v) -> {
+			logger.info(k + " = " + v);
 		});
 	}
 }

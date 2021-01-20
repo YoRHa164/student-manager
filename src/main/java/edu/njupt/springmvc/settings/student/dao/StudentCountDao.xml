@@ -15,7 +15,7 @@
 		order by
 			regDate asc
 	</select>
-	 <select id="queryDefaultScoreIntervalBySubject" resultType="map">
+	 <select id="queryScoreInDefaultIntervalBySubject" resultType="map">
 	 	select
 			count(case when `${subject}` >=90 and `${subject}` &lt;=100 then stuId end)  '>=90',
 			count(case when `${subject}` >=80 and `${subject}` &lt;  90 then stuId end)  '>=80',
@@ -24,5 +24,22 @@
 		    count(case when `${subject}` &lt; 60 then stuId end) '&lt;60'
 		from 
 			stuscore
+	 </select>
+	 <select id="queryTotalScoreInDefaultInterval" resultType="map">
+		 select
+			count(case when `total` >= 350 and `total` &lt;=400 then `total` end) '>=350',
+		    count(case when `total` >= 300 and `total` &lt; 350 then `total` end) '>=300',
+		    count(case when `total` >= 250 and `total` &lt; 300 then `total` end) '>=250',
+		    count(case when `total` >= 200 and `total` &lt; 250 then `total` end) '>=200',
+		    count(case when `total` >= 150 and `total` &lt; 200 then `total` end) '>=150',
+		    count(case when `total` >= 100 and `total` &lt; 150 then `total` end) '>=100',
+		    count(case when `total` >= 0   and `total` &lt; 100 then `total` end) '&lt;100'
+		from(
+			select
+				sum(`python` + `linux` + `sql` + `java`) `total` 
+			from
+				stuscore
+			group by stuId
+			) totalscore;
 	 </select>
 </mapper>
