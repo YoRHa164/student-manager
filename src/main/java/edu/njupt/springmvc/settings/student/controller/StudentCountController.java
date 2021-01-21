@@ -82,7 +82,7 @@ public class StudentCountController {
 		return result;
 	}
 	/**
-	 * 按照学生成绩分布进行区间查询
+	 * 按照学生总成绩分布进行区间查询
 	 * 响应格式: <br>
 	 * {
 	 * 		"code":0/1, 
@@ -112,24 +112,76 @@ public class StudentCountController {
 		}
 		return result;
 	}
-	
-	public Map<String, Object> test1(){
-		Map<String, Object> result = new HashMap<>(5);
+	/**
+	 * 按照学科、分数范围、分页查找学生信息
+	 * @param subject
+	 * @param page
+	 * @param limit
+	 * @param maxScore
+	 * @param minScore
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(path = "/querySubjOnZoneStu", method = RequestMethod.GET)
+	public Map<String, Object> queryStudentScoreBySbujectOnScoreRange(
+			@RequestParam("subjectName") 	String subject,
+			@RequestParam("page") 			Integer page,
+			@RequestParam("limit") 			Integer limit,
+			@RequestParam("maxScore") 		Integer maxScore,
+			@RequestParam("minScore") 		Integer minScore
+			)
+	{
+		Map<String, Object> result = new HashMap<>(6);
+		try {
+			Map<String, Object> res = studentCountService.queryStudentScoreBySbujectOnScoreRange(Map.of(
+					"subjectName", subject, 
+					"page", page, 
+					"limit", limit, 
+					"maxScore", maxScore, 
+					"minScore", minScore));
+			
+			result.put("data", res.get("data"));
+			result.put("count", res.get("count"));
+			result.put("code", 0);
+		} catch (Exception e) {
+			result.put("code", 1);
+			result.put("msg", e.getMessage());
+		}
 		
-		result.put("code", 0);
-		result.put("data", 
-				List.of(
-						Map.of("name", ">=350", "value", 20, "msg", "测试1"),
-						Map.of("name", ">=300", "value", 60),
-						Map.of("name", ">=250", "value", 60),
-						Map.of("name", ">=200", "value", 30),
-						Map.of("name", ">=150", "value", 35),
-						Map.of("name", ">=100", "value", 33),
-						Map.of("name", ">= 50", "value", 36),
-						Map.of("name", ">= 0", "value", 20)
-						
-						));
-		
+		return result;
+	}
+	/**
+	 * 按照分数范围、分页查找学生总成绩信息
+	 * @param page
+	 * @param limit
+	 * @param maxScore
+	 * @param minScore
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(path = "/querySumScoreOnZoneStu", method = RequestMethod.GET)
+	public Map<String, Object> queryStudentTotalScoreOnScoreRange(
+			@RequestParam("page") 			Integer page,
+			@RequestParam("limit") 			Integer limit,
+			@RequestParam("maxScore") 		Integer maxScore,
+			@RequestParam("minScore") 		Integer minScore
+			)
+	{
+		Map<String, Object> result = new HashMap<>();
+		try {
+			Map<String, Object> res = studentCountService.queryStudentTotalScoreOnScoreRange(Map.of(
+					"page", page, 
+					"limit", limit, 
+					"maxScore", maxScore,
+					"minScore", minScore));
+			
+			result.put("data", res.get("data"));
+			result.put("count", res.get("count"));
+			result.put("code", 0);
+		} catch (Exception e) {
+			result.put("code", 1);
+			result.put("msg", e.getMessage());
+		}
 		return result;
 	}
 }

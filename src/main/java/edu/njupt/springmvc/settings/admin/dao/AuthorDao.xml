@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.njupt.springmvc.settings.admin.dao.AuthorDao">
+	<select id="queryAuthorGroupInfo" resultType="map">
+		select
+			id,
+			displayName
+		from
+			authorgroup
+		order by
+			id asc
+	</select>
+</mapper>

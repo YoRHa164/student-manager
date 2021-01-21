@@ -3,6 +3,7 @@ package edu.njupt.springmvc.settings.student.service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +14,7 @@ import javax.annotation.Resource;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import edu.njupt.springmvc.settings.student.dao.StudentCountDao;
 import edu.njupt.springmvc.settings.student.exception.StudentScoreQueryException;
@@ -102,5 +104,102 @@ public class StudentCountService {
 			}
 		});
 		return temp;
+	}
+	/**
+	 * 请求格式 <br>
+	 * 	{
+	 * 		"subjectName":${subjectName},
+	 * 		"maxScore":${maxScore},
+	 * 		"minScore":${minScore},
+	 * 		"page":${page},
+	 * 		"limit":${limit}
+	 * 	}
+	 * @param req
+	 * @return
+	 * {
+	 * 		"data":${data},
+	 * 		"count":${count}
+	 * 	}
+	 * @throws StudentScoreQueryException 
+	 */
+	@Transactional
+	public Map<String, Object> queryStudentScoreBySbujectOnScoreRange(Map<String, Object> req) throws StudentScoreQueryException{
+		Map<String, Object> temp = new HashMap<>(10);
+		
+		String subject  = (String) req.get("subjectName");
+		Integer page = (Integer) req.get("page");
+		Integer limit = (Integer) req.get("limit");
+		Integer min = (Integer) req.get("minScore");
+		Integer max = (Integer) req.get("maxScore");
+
+		//检查分页合法
+		page = legalInteger(page, 1);
+		limit = legalInteger(limit, 0);
+		//检查学科合法
+		String lower = subject.toLowerCase();
+		if(isIegalSubject(lower))
+			temp.put("subject", lower);
+		else
+			throw new StudentScoreQueryException("使用非法科目");
+		temp.put("startIndex", (page - 1) * limit);
+		temp.put("limit", limit);
+		temp.put("minScore", min);
+		temp.put("maxScore", max);
+		
+		List<Map<String, String>> res = studentCountDao.queryStudentScoreBySbujectOnScoreRange(temp);
+		Integer count = studentCountDao.totalCountOfQueryStudentScoreBySbujectOnScoreRange(temp);
+		
+		temp.clear();
+		temp.put("data", res);
+		temp.put("count", count);
+		return temp;
+	}
+	/**
+	 * 请求格式 <br>
+	 * 	{
+	 * 		"maxScore":${maxScore},
+	 * 		"minScore":${minScore},
+	 * 		"page":${page},
+	 * 		"limit":${limit}
+	 * 	}
+	 * @param req
+	 * @return
+	 * {
+	 * 		"data":${data},
+	 * 		"count":${count}
+	 * 	}
+	 */
+	@Transactional
+	public Map<String, Object> queryStudentTotalScoreOnScoreRange(Map<String, Object> req){
+		Map<String, Object> result = new HashMap<>(10);
+		//验证数据合法性
+		Integer page = (Integer) req.get("page");
+		Integer limit = (Integer) req.get("limit");
+		page = legalInteger(page, 1);
+		limit = legalInteger(limit, 0);
+		
+		result.put("startIndex", (page - 1) * limit);
+		result.put("limit", limit);
+		result.put("maxScore", req.get("maxScore"));
+		result.put("minScore", req.get("minScore"));
+		//调用DAO接口
+		List<Map<String,String>> list = studentCountDao.queryStudentTotalScoreOnScoreRange(result);
+		Integer totalCount = studentCountDao.totalCountOfQueryStudentTotalScoreOnScoreRange(result);
+		
+		result.clear();
+		result.put("data", list);
+		result.put("count", totalCount);
+		
+		return result;
+	}
+	
+	/**
+	 * 检查合法性
+	 * @param beChecked
+	 * @param defaultNum
+	 * @return
+	 */
+	private static Integer legalInteger(Integer beChecked, Integer defaultNum) {
+		return beChecked == null? defaultNum: ((beChecked < defaultNum)? 1: beChecked);
 	}
 }

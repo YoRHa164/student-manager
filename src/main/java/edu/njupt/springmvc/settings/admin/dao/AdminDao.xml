@@ -10,13 +10,18 @@
 		authorGroupId,
 		createTime
 	</sql>
-	<select id="checkAdminAccountOldPasswordCurrect" resultType="LoginBean">
+	<select id="checkAdminAccountExists" resultType="LoginBean">
 		select 
 			<include refid="sysadminCompleteFields"></include>
 		from 
 			sysadmin
 		where
-			loginName=#{loginName} and password=#{password}
+			loginName=#{loginName}
+		<trim prefix="and">
+			<if test="password != null">
+				password=#{password}
+			</if>
+		</trim>
 	</select>
 	
 	<update id="updateAdminPassword">
@@ -27,4 +32,82 @@
 		where
 			loginName=#{loginName}
 	</update>
+	<select id="queryCompleteAdminList" resultType="AdminBean">
+		select 
+			`admin`.id id, 
+		    loginName, 
+		    phone, 
+		    realName, 
+		    displayName, 
+		    createTime 
+		from 
+			sysadmin `admin` 
+		left join 
+			authorgroup `group` 
+		on 
+			`admin`.authorGroupId = `group`.id
+		limit
+			#{startIndex}, #{limit};
+	</select>
+	<select id="totalCountOfCompleteAdminList" resultType="int" >
+		select
+			count(`admin`.id)
+		from
+			sysadmin `admin`
+	</select>
+	<delete id="deleteAdminById">
+		delete from 
+			sysadmin 
+		where 
+			id=#{id}
+	</delete>
+	
+	<update id="updateAdminByAdminBean" parameterType="AdminBean">
+		update 
+			sysadmin
+		<set>
+			<if test="loginName != null and loginName != ''">
+				loginName=#{loginName},
+			</if>
+			<if test="password != null and password != ''">
+				password=#{password},
+			</if>
+			<if test="realName != null and realName != ''">
+				realName=#{realName},
+			</if>
+			<if test="phone != null and phone != ''">
+				phone=#{phone},
+			</if>
+			<if test="authorGroupId != null">
+				authorGroupId=#{authorGroupId},
+			</if>
+		</set>
+		where
+			id=#{id}
+	</update>
+	<insert id="insertAdminByAdminBean" parameterType="AdminBean">
+		insert into 
+			sysadmin(
+				`loginName`,
+				`password`,
+				`phone`,
+				`realName`,
+				`authorGroupId`,
+				`createTime`
+			) values(
+				#{loginName},
+				#{password},
+				#{phone},
+				#{realName},
+				#{authorGroupId},
+				#{createTime}
+			)
+	</insert>
+	
+	
+	
+	
+	
+	
+	
 </mapper>

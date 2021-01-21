@@ -40,4 +40,32 @@ public class StudentCountDaoTest {
 			logger.info(k + " = " + v);
 		});
 	}
+	@Test
+	@Ignore
+	public void testQueryStudentScoreBySbujectOnScoreRange() {
+		List<Map<String, String>> res = scd.queryStudentScoreBySbujectOnScoreRange(
+				Map.of(
+				"subject", "sql", 
+				"startIndex", 0, 
+				"limit", 5, 
+				"maxScore", 100, 
+				"minScore", 60));
+		res.forEach(e -> {
+			System.out.println(e);
+		});
+	}
+	@Test
+	@Ignore
+	public void testQueryStudentTotalScoreOnScoreRange() {
+		List<Map<String, String>> res = scd.queryStudentTotalScoreOnScoreRange(Map.of("maxScore", 400, "minScore", 350, "startIndex", 0, "limit", 5));
+		res.forEach(e -> {
+			System.out.println(e);
+		});
+	}
+	@Test
+	@Ignore
+	public void testTotalCountOfQueryStudentTotalScoreOnScoreRange() {
+		Integer countOf = scd.totalCountOfQueryStudentTotalScoreOnScoreRange(Map.of("maxScore", 400, "minScore", 0, "startIndex", 0, "limit", 5));
+		System.out.println(countOf);
+	}
 }

@@ -42,4 +42,80 @@
 			group by stuId
 			) totalscore;
 	 </select>
+	 
+	 <select id="queryStudentScoreBySbujectOnScoreRange" parameterType="map" resultType="map">
+	 	select 
+			id, 
+			realName,
+			indentifyNo, 
+			phone, 
+			score
+		from (
+			select 
+				stuId, 
+				`${subject}` score
+			from 
+				 stuscore
+			where 
+				`${subject}` >=#{minScore} and 
+				`${subject}` &lt;=#{maxScore} 
+			order by 
+				score desc
+			) score
+		left join
+			stureginfo info
+		on
+			info.id = score.stuId
+		order by 
+			score desc
+		limit
+			#{startIndex},#{limit}
+	 </select>
+	 <select id="totalCountOfQueryStudentScoreBySbujectOnScoreRange" parameterType="map" resultType="int">
+		select 
+			stuId
+		from 
+			 stuscore
+		where 
+			`${subject}` >=#{minScore} and 
+			`${subject}` &lt;=#{maxScore} 
+	 </select>
+	 
+	 <select id="queryStudentTotalScoreOnScoreRange" resultType="map" parameterType="map">
+	 	select 
+			id, 
+			realName, 
+			indentifyNo, 
+			phone, 
+			score sum
+		from (
+			select 
+				stuId, 
+		        (`java` + `sql` + `linux` + `python`) score 
+		    from 
+				stuscore
+			where
+				(`java` + `sql` + `linux` + `python`) >= #{minScore}
+			and
+				(`java` + `sql` + `linux` + `python`) &lt;=#{maxScore}
+			) totalTable
+		left join
+			stureginfo info
+		on
+			totalTable.stuId=info.id
+		order by 
+			score desc
+		limit
+			#{startIndex}, #{limit};
+	 </select>
+	 <select id="totalCountOfQueryStudentTotalScoreOnScoreRange" resultType="int" parameterType="map">
+		select 
+			count(stuId) 
+	    from 
+			stuscore
+		where
+			(`java` + `sql` + `linux` + `python`) >= #{minScore}
+		and
+			(`java` + `sql` + `linux` + `python`) &lt;=#{maxScore}
+	 </select>
 </mapper>

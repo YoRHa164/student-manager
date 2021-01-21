@@ -38,4 +38,62 @@ public interface StudentCountDao {
 	 * @return
 	 */
 	Map<String, Long> queryTotalScoreInDefaultInterval();
+	
+	/**
+	 * 按照Map方式查询指定科目指定范围内学生成绩和信息
+	 * 	请求格式 <br>
+	 * 	{
+	 * 		"subject":${subject},
+	 * 		"maxScore":${maxScore},
+	 * 		"minScore":${minScore},
+	 * 		"startIndex":${startIndex},
+	 * 		"limit":${limit}
+	 * 	}
+	 * @param reqMap
+	 * @return
+	 * 	返回Map格式: <br>
+	 * 	{
+	 * 		"id":${id},
+	 * 		"realName":${realName},
+	 * 		"indentifyNo":${indentifyNo},
+	 * 		"phone":${phone},
+	 * 		"score":${score}
+	 * 	}
+	 */
+	List<Map<String, String>> queryStudentScoreBySbujectOnScoreRange(Map<String, Object> reqMap);
+	/**
+	 * 与 <b>queryStudentScoreBySbujectOnScoreRange()</b> 方法一起使用。该方法返回不分页的结果数量
+	 * @param reqMap
+	 * @return
+	 */
+	Integer totalCountOfQueryStudentScoreBySbujectOnScoreRange(Map<String, Object> reqMap);
+	
+	/**
+	 *  按照Map方式查询总科目指定范围内学生成绩和信息
+	 * 	请求格式 <br>
+	 * 	{
+	 * 		"maxScore":${maxScore},
+	 * 		"minScore":${minScore},
+	 * 		"startIndex":${startIndex},
+	 * 		"limit":${limit}
+	 * 	}
+	 * @param reqMap
+	 * @return
+	 * 返回Map格式: <br>
+	 * 	{
+	 * 		"id":${id},
+	 * 		"realName":${realName},
+	 * 		"indentifyNo":${indentifyNo},
+	 * 		"phone":${phone},
+	 * 		"score":${score}
+	 * 	}
+	 */
+	List<Map<String, String>> queryStudentTotalScoreOnScoreRange(Map<String, Object> reqMap);
+	
+	/**
+	 * 与 <b>queryStudentTotalScoreOnScoreRange()</b> 方法一起使用。该方法返回不分页的结果数量
+	 * @param reqMap
+	 * @return
+	 */
+	Integer totalCountOfQueryStudentTotalScoreOnScoreRange(Map<String, Object> reqMap);
 }
