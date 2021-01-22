@@ -67,4 +67,11 @@ public class AdminDaoTest {
 		b.setCreateTime(DataBaseUtil.currentTimeByDefault());
 		adminDao.insertAdminByAdminBean(b);
 	}
+	@Test
+	@Ignore
+	public void testCheckAccessExistsByGroupId() {
+		int i = adminDao.checkAccessExistsByGroupId(2, "/api/Admin/add");
+		
+		System.out.println(i);
+	}
 }

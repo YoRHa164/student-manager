@@ -104,7 +104,23 @@
 			)
 	</insert>
 	
-	
+	<select id="checkAccessExistsByGroupId" resultType="int">
+		select 
+			count(authorUrl) 
+		from (
+			select
+				authorId
+			from
+				author_group
+			where 
+				groupId = #{gid}) gr
+		left join 
+			author au
+		on 
+			gr.authorId = au.authorId
+		where 
+			authorUrl=#{url}
+	</select>
 	
 	
 	

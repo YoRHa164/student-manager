@@ -35,7 +35,8 @@ import com.alibaba.druid.pool.DruidDataSource;
 		basePackages = {
 				"edu.njupt.springmvc.settings.admin",
 				"edu.njupt.springmvc.settings.login",
-				"edu.njupt.springmvc.settings.student"}, 
+				"edu.njupt.springmvc.settings.student",
+				"edu.njupt.springmvc.web.interceptor"}, 
 		excludeFilters = {@Filter(type = FilterType.ANNOTATION, classes = {Controller.class})})
 public class SpringContextConfig {
 	/**

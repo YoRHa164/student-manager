@@ -18,7 +18,7 @@ import edu.njupt.springmvc.settings.login.bean.LoginBean;
 import edu.njupt.springmvc.settings.login.exception.LoginException;
 import edu.njupt.springmvc.settings.login.service.LoginService;
 import edu.njupt.springmvc.util.DataBaseUtil;
-import edu.njupt.springmvc.web.interceptor.AccessInterceptor;
+import edu.njupt.springmvc.web.interceptor.LoginAccessInterceptor;
 
 @Controller
 @RequestMapping("/api/Admin")
@@ -32,7 +32,7 @@ public class LoginController {
 	/**
 	 * 完成登录操作
 	 * 根据请求前端api，接收参数，完成请求。若登录失败，则响应以下格式 {"code":1, "msg":${msg}}
-	 * 若登录成功，则将 {@link LoginBean} 对象放入 {@link HttpSession session} 域，以供以后进行{@link AccessInterceptor } 登录权限验证
+	 * 若登录成功，则将 {@link LoginBean} 对象放入 {@link HttpSession session} 域，以供以后进行{@link LoginAccessInterceptor } 登录权限验证
 	 * @param req
 	 * @param acc
 	 * @param pwd

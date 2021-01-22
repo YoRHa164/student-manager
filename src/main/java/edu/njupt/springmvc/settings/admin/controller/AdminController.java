@@ -135,6 +135,12 @@ public class AdminController {
 		
 		return result;
 	}
+	/**
+	 * 添加新管理员
+	 * @param b
+	 * @param surePassword
+	 * @return
+	 */
 	@ResponseBody
 	@RequestMapping(path = "/add", method = RequestMethod.POST)
 	public Map<String, Object> insertAdminByAdminBean(AdminBean b, String surePassword){

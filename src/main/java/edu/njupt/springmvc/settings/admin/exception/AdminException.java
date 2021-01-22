@@ -1,4 +1,4 @@
-package edu.njupt.springmvc.settings.admin;
+package edu.njupt.springmvc.settings.admin.exception;
 
 public class AdminException extends Exception {
 

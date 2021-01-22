@@ -241,7 +241,7 @@
   	//添加权限组处理函数
   	function addAuthorGroup($,form,layer,laytpl){
   		//向后台请求所有的权限
-  		$.get("../api/Author/all",function(data){
+  		$.get("../api/AuthorGroup/allAccess",function(data){
   			//获取添加权限组模板
 			var template = addAuthorGroupForm.innerHTML;
   			//渲染模板

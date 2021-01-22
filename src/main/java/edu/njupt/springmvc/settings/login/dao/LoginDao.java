@@ -15,4 +15,5 @@ import edu.njupt.springmvc.settings.login.bean.LoginBean;
 @Scope("prototype")
 public interface LoginDao {
 	LoginBean login(@Param(value = "account") String account, @Param(value = "password") String password);
+	
 }

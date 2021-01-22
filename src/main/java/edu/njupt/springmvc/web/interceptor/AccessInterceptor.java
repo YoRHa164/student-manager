@@ -1,46 +1,51 @@
 package edu.njupt.springmvc.web.interceptor;
 
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import edu.njupt.springmvc.settings.admin.service.AdminService;
 import edu.njupt.springmvc.settings.login.bean.LoginBean;
 
-/**
- * 进行权限拦截
- * @author Administrator
- *
- */
-public class AccessInterceptor implements HandlerInterceptor{
-	private static final Logger logger = Logger.getLogger(AccessInterceptor.class);
+public class AccessInterceptor implements HandlerInterceptor {
+	private final ObjectMapper om = new ObjectMapper();
 	
-	/**
-	 * 完成对请求权限控制 </br>
-	 * 拦截规则： </br>
-	 * 1、若请求未曾登录过，即请求session域中无 login 属性请求被强制跳转至登录界面
-	 * 2、若请求曾登录过，但session失效，即请求session域中无 login 属性请求被强制跳转至登录界面
-	 * 3、若请求曾登陆过并且session域未失效，不进行拦截，即前往所请求资源
-	 */
+	private AdminService adminService;
+	
+	
+	public AccessInterceptor(AdminService adminService) {
+		super();
+		this.adminService = adminService;
+	}
+
+
+
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
+		LoginBean loginBean = (LoginBean) request.getSession().getAttribute("login");
 		String servletPath = request.getServletPath();
-		logger.info(String.format("access intercepor invoke : request path ===> %s", servletPath));
 		
-		if(!"/pages/login.html".equals(servletPath)) {
-			/*
-			 * 此处进行权限判断 
-			 */
-			LoginBean login = (LoginBean) request.getSession().getAttribute("login");
-			if(login != null) {
-				return true;
-			}
-			response.sendRedirect(request.getContextPath() + "/pages/login.html");
+		if(loginBean == null) {
+			response.sendRedirect("/pages/login.html");
 			return false;
 		}
 		
+		if(!adminService .checkAccessExistsByGroupId(loginBean.getAuthorGroupId(), servletPath)) {
+			response.setContentType("application/json;charset=utf-8");
+			om.writeValue(
+					response.getOutputStream(), 
+					Map.of(
+							"code", 1, 
+							"msg", "您无权修改此项。若需要修改，请联系管理员"));
+			return false;
+		}
 		return true;
 	}
+	
 }

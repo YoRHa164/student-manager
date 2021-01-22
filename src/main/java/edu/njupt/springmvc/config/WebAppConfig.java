@@ -1,5 +1,7 @@
 package edu.njupt.springmvc.config;
 
+import javax.annotation.Resource;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -11,7 +13,9 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
+import edu.njupt.springmvc.settings.admin.service.AdminService;
 import edu.njupt.springmvc.web.interceptor.AccessInterceptor;
+import edu.njupt.springmvc.web.interceptor.LoginAccessInterceptor;
 
 @EnableWebMvc
 @Configuration
@@ -22,6 +26,8 @@ import edu.njupt.springmvc.web.interceptor.AccessInterceptor;
 		"edu.njupt.springmvc.web.controller"
 		})
 public class WebAppConfig implements WebMvcConfigurer {
+	@Resource(type = AdminService.class)
+	private AdminService adminService;
 	
 	@Override
 	public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
@@ -39,9 +45,11 @@ public class WebAppConfig implements WebMvcConfigurer {
 	 */
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
-		registry.addInterceptor(new AccessInterceptor()).
+		registry.addInterceptor(new LoginAccessInterceptor()).
 				 addPathPatterns("/**/*.html", "/api/**", "/").
 				 excludePathPatterns("/api/Admin/login");
+		registry.addInterceptor(new AccessInterceptor(adminService)).
+				 addPathPatterns("/api/**/add*", "/api/**/delete*", "/api/**/update*");
 	}
 	@Bean
 	public ViewResolver getViewResolver() {

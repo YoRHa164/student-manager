@@ -6,8 +6,8 @@ import org.junit.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import edu.njupt.springmvc.config.SpringContextConfig;
-import edu.njupt.springmvc.settings.admin.AdminException;
 import edu.njupt.springmvc.settings.admin.bean.AdminBean;
+import edu.njupt.springmvc.settings.admin.exception.AdminException;
 
 public class AdminServiceTest {
 	private AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(SpringContextConfig.class);
@@ -54,5 +54,11 @@ public class AdminServiceTest {
 		} catch (AdminException e) {
 			e.printStackTrace();
 		}
+	}
+	@Test
+	@Ignore
+	public void testCheckAccess() {
+		boolean b = adminService.checkAccessExistsByGroupId(2, "/api/StuInfo/deleteById");
+		System.out.println(b);
 	}
 }

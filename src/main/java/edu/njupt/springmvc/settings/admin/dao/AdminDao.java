@@ -58,4 +58,11 @@ public interface AdminDao {
 	 * @return
 	 */
 	int insertAdminByAdminBean(AdminBean b);
+	/**
+	 * 检查当前权限组是否有权限进行url请求
+	 * @param gid
+	 * @param url
+	 * @return
+	 */
+	int checkAccessExistsByGroupId(@Param("gid") Integer gid, @Param("url") String url);
 }

@@ -1,13 +1,130 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="edu.njupt.springmvc.settings.admin.dao.AuthorDao">
-	<select id="queryAuthorGroupInfo" resultType="map">
+	<select id="queryAuthorGroupInfo" resultType="AuthorGroupBean">
 		select
 			id,
-			displayName
+			displayName,
+			descs,
+			GroupName
 		from
 			authorgroup
+		<where>
+			<if test="groupName != null and groupName != ''">
+				GroupName=#{groupName}
+			</if>
+		</where>
 		order by
 			id asc
 	</select>
+	<select id="queryAuthorGroupAccessByAuthorGroupId" resultType="map">
+		select 
+			au.authorId, 
+			displayName 
+		from 
+			author_group a_g 
+		left join 
+			author au 
+		on 
+			a_g.authorId=au.authorId 
+		where 
+			a_g.groupId=#{gid}
+		order by 
+			a_g.authorId asc;
+	</select>
+	<update id="updateAuthorGroupInfoByMap" parameterType="map">
+		update
+			authorgroup
+		<set>
+			<if test="displayName != null and displayName != ''">
+				displayName=#{displayName},
+			</if>
+			<if test="descs != null and descs != ''">
+				descs=#{descs}
+			</if>
+		</set>
+		where
+			id=#{id}
+	</update>
+	<delete id="deleteAuthorGroupInfoById">
+		delete from
+			authorgroup
+		where
+			id=#{id}
+	</delete>
+	<delete id="deleteAuthorGroupRelationById">
+		delete from
+			author_group
+		where
+			groupId=#{gid}
+	</delete>
+	
+	<delete id="deleteAuthorGroupAccess">
+		delete from 
+			author_group
+		where
+		<foreach collection="authorIds" item="ids" separator="or">
+			groupId=#{gid} and authorId=#{ids}
+		</foreach>
+	</delete>
+	
+	<select id="totalCountOfAuthorOfId" resultType="int">
+		select 
+			count(id)
+		from
+			author_group
+		where
+			groupId=#{gid}
+	</select>
+	<select id="queryGroupAuthorNotHaveByGid" resultType="map">
+		select 
+			authorId, 
+			displayName 
+		from 
+			author 
+		where
+			authorId not in(
+				select 
+					authorId 
+				from 
+					author_group 
+				where 
+					groupId=#{gid})
+	</select>
+	<select id="countOfGroupAuthorNotHaveByGid" resultType="int">
+		select 
+			count(authorId) 
+		from 
+			author 
+		where
+			authorId not in(
+				select 
+					authorId 
+				from 
+					author_group 
+				where 
+					groupId=#{gid})
+	</select>
+	<insert id="addAuthorGroupAccess">
+		insert into 
+			author_group(authorId, groupId)
+		<foreach collection="authorIds" item="ids" open="values"  separator=",">
+			(#{ids}, #{gid})
+		</foreach>
+	</insert>
+	
+	<select id="queryAllAuthorAccess" resultType="map">
+		select
+			authorId,
+			displayName
+		from
+			author
+	</select>
+	
+	<insert id="insertNewAuthorGroupByAuthorGroupBean" parameterType="AuthorGroupBean">
+		insert into 
+			authorgroup(GroupName, displayName, descs)
+		values
+			(#{groupName}, #{displayName}, #{descs})
+	</insert>
 </mapper>

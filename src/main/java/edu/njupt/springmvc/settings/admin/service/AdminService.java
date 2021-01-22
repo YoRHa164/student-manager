@@ -10,9 +10,9 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import edu.njupt.springmvc.settings.admin.AdminException;
 import edu.njupt.springmvc.settings.admin.bean.AdminBean;
 import edu.njupt.springmvc.settings.admin.dao.AdminDao;
+import edu.njupt.springmvc.settings.admin.exception.AdminException;
 import edu.njupt.springmvc.settings.login.bean.LoginBean;
 import edu.njupt.springmvc.util.DataBaseUtil;
 
@@ -131,5 +131,14 @@ public class AdminService {
 		if(i != 1) {
 			throw new AdminException("添加失败");
 		}
+	}
+	/**
+	 * 检查指定权限组是否有指定url权限
+	 * @param gid
+	 * @param url
+	 * @return 如果拥有权限，则返回true，否则反复false
+	 */
+	public boolean checkAccessExistsByGroupId(Integer gid, String url) {
+		return adminDao.checkAccessExistsByGroupId(gid, url) != 0;
 	}
 }
